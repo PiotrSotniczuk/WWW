@@ -1,0 +1,124 @@
+footer {
+
+    background-color: aquamarine;
+  
+    color: blue;
+  
+    font-family: sans-serif;
+  
+    font-size: 30px;
+  
+    width: 50%;
+
+  
+  }
+
+table, th, td {
+    border: 2px solid red;
+    border-collapse: collapse;
+    text-align: left;
+
+  }
+
+th {
+    font-weight: 100;
+    font-style: italic;
+}
+
+body{
+    text-align: center;
+}
+
+p{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 75%;
+}
+
+#pierwszy {
+    background-color: khaki;   
+    padding: 35px;
+    border: 5px solid orange;
+}
+
+#drugi{
+    background-color: lightcoral;    
+    padding: 20px;
+    border: 5px solid red;
+}
+
+#trzeci{
+    z-index: 1;
+    top: 106px;
+    width: 200px;
+    background-color: peru;
+    position: absolute;
+}
+
+div{
+    position: relative;
+}
+
+img{
+    display: block;
+}
+
+#logo{
+    width: 100px;
+    height: 100px;
+}
+
+#zdjec{
+    margin-top: 10px;
+    position: relative;
+}
+
+#ber{
+    left: 60%;
+    position: absolute;
+    width: 40%;
+    height: auto;
+    
+}
+
+#waw{
+    right: 60%;
+    position: absolute;
+    width: 40%;
+    height: auto;
+}
+
+span{
+    font-size: larger;
+    font-weight: bold;
+    margin-right: 10%;
+    margin-left: 10%;
+}
+#pogoda{
+    margin-top: 30%;
+    background-color: khaki;   
+    padding: 35px;
+    border: 5px solid orange;
+}
+
+#sam{
+    text-align: center;
+    margin-left: auto;
+margin-right: auto;
+}
+
+#Typ{
+    margin-top: 5%;
+    background-color: lightcoral;    
+    padding: 20px;
+    border: 5px solid red;
+}
+
+#powrot{
+    margin-right: 80%;
+    padding: 10px;
+    background-color: salmon;
+    border: 5px solid black;
+}

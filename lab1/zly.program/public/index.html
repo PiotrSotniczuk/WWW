@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator pola okręgu</title>
+    <style type="text/css">
+
+#logo {
+    display: inline-block;
+}
+
+#logo img {
+    width: 400px;
+    height: 261px;
+    vertical-align: middle;
+}
+
+#wpisywacz label, #wynik label,
+#wpisywacz #promien, #wpisywacz #policz,
+#wynik #pole {
+    display: inline-block;
+}
+
+#wpisywacz {
+    display: inline-block;
+}
+
+#wynik {
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+    <div id="pojemnik">
+        <div id="logo"><a href="http://www.mimuw.edu.pl/"><img src="images/mimuw.jpg"></a></div>
+        <div id="wpisywacz">
+            <label for="promien">Promień okręgu:</label>
+            <input id="promien" type="number" placeholder="17">
+            <button id="policz" type="button">Policz &gt;&gt;</button>
+        </div>
+        <div id="wynik">
+            <form action="/najwieksze" method="get">
+                <label for="pole">Pole okręgu:</label>
+                <input id="pole" name="pole" type="number" readonly>
+                <button id="najwieksze" type="submit">Rekordowe &gt;&gt;</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function policzPole(r) {
+            return Math.PI * Math.pow(r, 2);
+        }
+
+        function zamien() {
+            var pole = document.querySelector('#promien').value;
+            if(pole == '' || pole != Number(pole)) {
+                return;
+            }
+
+            //if(!document.cookie.match('stoj=')) {
+                document.querySelector('#pole').value = policzPole(pole);
+                document.querySelector('#wpisywacz').style.display = 'none';
+                document.querySelector('#wynik').style.display = 'inline-block';
+                //document.cookie = "stoj=true";
+            //}
+        }
+
+        document.querySelector('#policz').addEventListener('click', zamien);
+    </script>
+</body>
