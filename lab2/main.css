@@ -122,3 +122,10 @@ margin-right: auto;
     background-color: salmon;
     border: 5px solid black;
 }
+
+#czas{
+    margin-top: 5%;
+    background-color: rgb(216, 92, 20);   
+    padding: 35px;
+    border: 5px solid rgb(247, 45, 10);
+}
