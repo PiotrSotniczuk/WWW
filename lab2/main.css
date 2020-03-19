@@ -35,13 +35,8 @@ h1{
 }
 
 p{
-    font-size: x-large;
+    font-size: large;
     font-weight: bold;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    width: 75%;
 }
 
 #pierwszy {
@@ -58,14 +53,10 @@ p{
 
 #trzeci{
     z-index: 1;
-    top: 106px;
+    top: 420px;
     width: 200px;
     background-color: peru;
     position: absolute;
-}
-
-div{
-    position: relative;
 }
 
 img{
@@ -103,11 +94,26 @@ span{
     margin-right: 10%;
     margin-left: 10%;
 }
-#pogoda{
+
+h2{
+    margin-top: 5%;
+    padding: 20px;
+}
+
+.secound{
     margin-top: 30%;
     background-color: khaki;   
-    padding: 35px;
     border: 5px solid orange;
+}
+
+.third{
+    background-color: rgb(216, 92, 20);   
+    border: 5px solid rgb(247, 45, 10);
+}
+
+.fourth{
+    background-color: lightcoral;    
+    border: 5px solid red;
 }
 
 #sam{
@@ -116,23 +122,9 @@ span{
 margin-right: auto;
 }
 
-#Typ{
-    margin-top: 5%;
-    background-color: lightcoral;    
-    padding: 20px;
-    border: 5px solid red;
-}
-
 #powrot{
     margin-right: 80%;
     padding: 10px;
     background-color: salmon;
     border: 5px solid black;
-}
-
-#czas{
-    margin-top: 5%;
-    background-color: rgb(216, 92, 20);   
-    padding: 35px;
-    border: 5px solid rgb(247, 45, 10);
 }
