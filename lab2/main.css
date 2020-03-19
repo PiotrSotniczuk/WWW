@@ -1,16 +1,9 @@
 footer {
-
     background-color: aquamarine;
-  
     color: blue;
-  
     font-family: sans-serif;
-  
     font-size: 30px;
-  
     width: 50%;
-
-  
   }
 
 table, th, td {
@@ -68,24 +61,14 @@ img{
     height: 100px;
 }
 
-#zdjec{
-    margin-top: 10px;
-    position: relative;
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
-#ber{
-    left: 60%;
-    position: absolute;
-    width: 40%;
-    height: auto;
-    
-}
-
-#waw{
-    right: 60%;
-    position: absolute;
-    width: 40%;
-    height: auto;
+.city{
+	width: 40%;
 }
 
 span{
@@ -101,7 +84,6 @@ h2{
 }
 
 .secound{
-    margin-top: 30%;
     background-color: khaki;   
     border: 5px solid orange;
 }
