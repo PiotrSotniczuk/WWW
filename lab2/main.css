@@ -31,26 +31,6 @@ p{
 	font-weight: bold;
 }
 
-#pierwszy{
-	background-color: khaki;
-	padding: 35px;
-	border: 5px solid orange;
-}
-
-#drugi{
-	background-color: lightcoral;
-	padding: 20px;
-	border: 5px solid red;
-}
-
-#trzeci{
-	z-index: 1;
-	top: 420px;
-	width: 200px;
-	background-color: peru;
-	position: absolute;
-}
-
 #logo{
 	display: block;
 	text-align: left;
@@ -108,7 +88,8 @@ h2{
 nav{
 	font-family: "Gill Sans", sans-serif;
 	/*TODO dziwne rozwiaznie, ale inaczej wciecia byly brzydkie - 
-	dlugie slowa brzydko wystawaly przy align: center odziedzicznym z body*/
+	dlugie slowa brzydko wystawaly przy align: center odziedzicznym z body,
+	nie wiem czy to nie powoduje ze znika przy malym ekranie*/
 	text-align: left;
 }
 
@@ -137,3 +118,27 @@ a:link {
 	background-color: red;
 	font-weight: bold;
 }
+
+@media screen and (max-width: 500px){
+	.container{
+		flex-direction: column;
+	}
+
+	.city{
+		display: none;
+	}
+
+	#Pogoda{
+		display: none;
+	}
+}
+
+@media screen and (max-width: 800px)
+and (min-width: 500px){
+	/*TODO tablet tak zeby menu bylo nad reszta*/
+}
+
+html{
+	max-width: 1300px;
+}
+
