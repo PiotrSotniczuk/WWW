@@ -94,3 +94,46 @@ h2{
 	background-color: salmon;
 	border: 5px solid black;
 }
+
+.menu{
+	list-style: none;
+	padding-left: 0px;
+}
+
+.inmenu{
+	padding-left: 120px;
+}
+
+
+nav{
+	font-family: "Gill Sans", sans-serif;
+	/*TODO dziwne rozwiaznie, ale inaczej wciecia byly brzydkie - 
+	dlugie slowa brzydko wystawaly przy align: center*/
+	text-align: left;
+}
+
+a:visited{
+	color: blue;
+}
+
+a{
+	color: blue;
+}
+
+a:link {
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.opozn{
+	background-color: yellow;
+}
+
+.bopozn{
+	background-color: orange;
+}
+
+.odwolany{
+	background-color: red;
+	font-weight: bold;
+}
