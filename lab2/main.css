@@ -53,6 +53,11 @@ h2{
 	padding: 20px;
 }
 
+.first{
+	background-color: rgb(208, 255, 0);
+	border: 5px solid rgb(113, 122, 73);
+}
+
 .secound{
 	background-color: khaki;
 	border: 5px solid orange;
@@ -142,3 +147,21 @@ html{
 	max-width: 1300px;
 }
 
+.pasazerowie li{
+	width: 30%;
+	margin: auto;
+}
+
+.pasazerowie li:nth-child(even){
+	background-color: grey;
+}
+
+.popup{
+	display: none;
+	background-color: orange;
+	position: absolute;
+}
+
+.pasazerowie li:hover .popup{
+	display: block;
+}
