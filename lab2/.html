@@ -9,33 +9,107 @@
 	<script src="main.js"></script>
 </head>
 <body>
-	<h1>Lista Lotów</h1>
-	<img src="logo.jpeg" alt="logo firmy" id="logo">
+	<header>
+		<h1 id="Pocz">Strona Główna</h1>
+		<img src="logo.jpeg" alt="logo firmy" id="logo">
+	</header>
 
-	<p id="pierwszy">To jest wyszukiwarka Lotów</p>
-	
-	<p id="trzeci">Ale super lot</p>
-	
+	<nav>
+		<h2>MENU</h2>
+		<ul>
+			<li>
+				<a href=".html">Strona Główna</a>
+				<ol>
+					<li><a href="#Pocz">Początek</a></li>
+					<li><a href="#ListLot">Lista Lotów</a></li>
+					<li><a href="#ListLotOp">Lista Lotów Opóźnionych</a></li>
+				</ol>
+			</li>
 
-	<p id="drugi">Wszystkie Loty poniżej</p>
-	
-	<table>		
-		<tr>
-			<th>Nr. Lotu</th><th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th>
-		</tr>
+			<li>
+				<a href="lot.html">Strona Lotu</a>
+				<ol>
+					<li><a href="lot.html#Pogoda">Pogoda</a></li>
+					<li><a href="lot.html#Czas">Czas Lotu</a></li>
+					<li><a href="lot.html#Samolot">Samolot</a></li>
+				</ol>
+			</li>
 
-		<tr>
-			<td> <a href="lot.html">102</a></td><td>Warszawa</td><td>Berlin</td><td>23.03.2020</td><td>5:03</td>
-		</tr>
+			<li>
+				<a href="lot.html">Jakas nowa Strona</a>
+			</li>
+		</ul>
+	</nav>
 
-		<tr>
-			<td><a href="lot.html">105</a></td><td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td>
-		</tr>
-			
-		<tr>
-			<td><a href="lot.html">122</a></td><td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td>
-		</tr>
-	</table>
+	<main>
+		<article>
+			<h2 class="secound" id="ListLot">Lista Lotów</h2>
+			<table>		
+				<tr>
+					<th>Nr. Lotu</th><th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th>
+				</tr>
+
+				<tr>
+					<td> <a href="lot.html">102</a></td><td>Warszawa</td><td>Berlin</td><td>23.03.2020</td><td>5:03</td>
+				</tr>
+
+				<tr>
+					<td><a href="lot.html">105</a></td><td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td>
+				</tr>
+					
+				<tr>
+					<td><a href="lot.html">122</a></td><td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td>
+				</tr>
+			</table>
+		</article>
+
+		<article>
+			<h2 class="third" id="ListLotOp">Lista Lotów Opóźnionych</h2>
+			<table>		
+				<tr>
+					<th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th><th>Opóźnienie</th>
+				</tr>
+
+				<tr>
+					<td>Warszawa</td><td>Berlin</td><td>23.03.2020</td><td>5:03</td><td>20min</td>
+				</tr>
+
+				<tr>
+					<td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td><td>40min</td>
+				</tr>
+					
+				<tr>
+					<td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td><td>15min</td>
+				</tr>
+
+				<tr>
+					<td>A</td><td>B</td><td>24.03.2020</td><td>15:03</td><td>120min</td>
+				</tr>
+
+				<tr>
+					<td>Pcim</td><td>Kozia Wólka</td><td>11.4.2019</td><td>10:12</td><td>1400min</td>
+				</tr>
+					
+				<tr>
+					<td>K</td><td>W</td><td>26.05.2020</td><td>2:48</td><td>99min</td>
+				</tr>
+
+				<tr>
+					<td>Warszawa</td><td>Kraków</td><td>17.09.2020</td><td>5:33</td><td>60min</td>
+				</tr>
+
+				<tr>
+					<td>Gdańsk</td><td>Warszawa</td><td>03.04.2021</td><td>15:19</td><td>990min</td>
+				</tr>
+					
+				<tr>
+					<td>Kraków</td><td>Amsterdam</td><td>22.09.2020</td><td>21:18</td><td>115min</td>
+				</tr>
+			</table>
+		</article>
+
+
+	</main>
 
 </body>
 
