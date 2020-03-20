@@ -101,14 +101,14 @@ h2{
 }
 
 .inmenu{
-	padding-left: 120px;
+	padding-left: 40px;
 }
 
 
 nav{
 	font-family: "Gill Sans", sans-serif;
 	/*TODO dziwne rozwiaznie, ale inaczej wciecia byly brzydkie - 
-	dlugie slowa brzydko wystawaly przy align: center*/
+	dlugie slowa brzydko wystawaly przy align: center odziedzicznym z body*/
 	text-align: left;
 }
 
