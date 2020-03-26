@@ -124,7 +124,7 @@ a:link {
 	font-weight: bold;
 }
 
-@media screen and (max-width: 500px){
+@media screen and (max-width: 576px){
 	.container{
 		flex-direction: column;
 	}
@@ -138,9 +138,17 @@ a:link {
 	}
 }
 
-@media screen and (max-width: 800px)
-and (min-width: 500px){
+@media screen and (max-width: 968px)
+and (min-width: 576px){
 	/*TODO tablet tak zeby menu bylo nad reszta*/
+	nav{
+		order: -1;
+		flex: 1 0 100%;
+	}
+
+	.container{
+		flex-wrap: wrap;
+	}
 }
 
 html{
