@@ -110,9 +110,6 @@ h2{
 
 nav{
 	font-family: "Gill Sans", sans-serif;
-	/*TODO dziwne rozwiaznie, ale inaczej wciecia byly brzydkie - 
-	dlugie slowa brzydko wystawaly przy align: center odziedzicznym z body,
-	nie wiem czy to nie powoduje ze znika przy malym ekranie*/
 	text-align: left;
 	grid-area: nav;
 }
@@ -200,4 +197,16 @@ html{
 
 .pasazerowie li:hover .popup{
 	display: block;
+}
+
+.block{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	padding-top: 25%;
+	font-size: xx-large;
+	font-weight: 900;
+	background-color: orchid;
+	opacity: 0.5;
 }
