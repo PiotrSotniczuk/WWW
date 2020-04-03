@@ -31,16 +31,40 @@ interface ILiniaLotnicza {
     lotniska: ILotnisko[];
 }
 
-let dataStructure: ILiniaLotnicza = JSON.parse(jsonString);
-console.log(dataStructure.piloci.length);
-
 function sprawdzDaneLiniiLotniczej(dane: any): boolean {
-    if(typeof(dane) === "object"){
-        if(dane.piloci && typeof(dane.piloci)){
-            
-        }else{
-            return false;
-        }
+    if(typeof(dane) !== "object"){
+        return false;
     }
-    return false;
+    if(dane.piloci && Array.isArray(dane.piloci)){
+        for (const iterator of dane.piloci) {
+            if(typeof(iterator) !== "string"){
+               return false;
+            }
+        }
+    }else{
+        return false;
+    }
+
+    if(dane.lotniska && typeof(dane.lotniska) === "object"){
+        for (const key in dane.lotniska) {
+            if (typeof(key) === "string") {
+                
+            }else{
+                return false;
+            }
+        }
+    }else{
+        return false;
+    }
+
+    return true;
+}
+let dataStructure: ILiniaLotnicza;
+
+dataStructure = JSON.parse(jsonString);
+
+if(sprawdzDaneLiniiLotniczej(dataStructure)) {
+    console.log("dobry");
+}else{
+    console.log("zly");
 }
