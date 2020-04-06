@@ -35,6 +35,8 @@ function sprawdzDaneLiniiLotniczej(dane: any): boolean {
     if(typeof(dane) !== "object"){
         return false;
     }
+
+    // sprawdzam pilotów
     if(dane.piloci && Array.isArray(dane.piloci)){
         for (const iterator of dane.piloci) {
             if(typeof(iterator) !== "string"){
@@ -45,12 +47,23 @@ function sprawdzDaneLiniiLotniczej(dane: any): boolean {
         return false;
     }
 
+    // sprawdzam lotniska
     if(dane.lotniska && typeof(dane.lotniska) === "object"){
-        for (const key in dane.lotniska) {
-            if (typeof(key) === "string") {
-                
-            }else{
+        const lotniska = dane.lotniska;
+        for (const key in lotniska) {
+            // sprawdzam strukture tablic
+            if (typeof(key) !== "string" || !Array.isArray(lotniska[key])
+            || lotniska[key].length !== 2 || typeof(lotniska[key][0]) !== "string"
+            || !Array.isArray(lotniska[key][1])) {
                 return false;
+            } else{
+                // sprawdzam zawartosc pasów
+                const pasy = lotniska[key][1];
+                for (const iterator of pasy) {
+                    if(typeof(iterator) !== "number"){
+                        return false;
+                    }
+                }
             }
         }
     }else{
