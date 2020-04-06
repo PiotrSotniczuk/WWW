@@ -24,6 +24,7 @@ th{
 
 body{
 	text-align: center;
+	margin: 0px;
 }
 
 h1{
@@ -53,12 +54,13 @@ p{
 
 .container{
 	display: grid;
-	grid-template-columns: 200px 15px 2fr 15px 1fr;
+	grid-template-columns: 200px 2fr 1fr;
 	grid-template-rows: auto;
+	grid-column-gap: 15px;
 	grid-template-areas: 
-    "header header header header header"
-    "nav . poSrodku . zPrawej"
-    "footer footer footer footer footer";
+    "header header header"
+    "nav poSrodku zPrawej"
+    "footer footer footer";
 	
 }
 
@@ -140,7 +142,7 @@ a:link {
 	font-weight: bold;
 }
 
-@media screen and (max-width: 576px){
+@media screen and (max-width: 640px){
 	.container{
 		display: grid;
 		grid-template-columns: auto;
@@ -177,7 +179,7 @@ and (min-width: 640px){
 }
 
 html{
-	max-width: 1300px;
+	max-width: 1700px;
 }
 
 .pasazerowie li{
@@ -207,6 +209,10 @@ html{
 	padding-top: 25%;
 	font-size: xx-large;
 	font-weight: 900;
-	background-color: orchid;
-	opacity: 0.5;
+	background-color: rgba(255, 0, 0, 0.3);
+}
+
+.dane_os{
+	text-align: left;
+	line-height: 40px;
 }
