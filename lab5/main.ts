@@ -31,7 +31,7 @@ interface ILiniaLotnicza {
     lotniska: ILotnisko[];
 }
 
-function sprawdzDaneLiniiLotniczej(dane: any): boolean {
+function sprawdzDaneLiniiLotniczej(dane: any): dane is ILiniaLotnicza {
     if(typeof(dane) !== "object"){
         return false;
     }
@@ -72,12 +72,12 @@ function sprawdzDaneLiniiLotniczej(dane: any): boolean {
 
     return true;
 }
-let dataStructure: ILiniaLotnicza;
 
-dataStructure = JSON.parse(jsonString);
+let dataStructure = JSON.parse(jsonString);
 
 if(sprawdzDaneLiniiLotniczej(dataStructure)) {
     console.log("dobry");
+    let juzNapewnoDaneLiniii = dataStructure;
 }else{
     console.log("zly");
 }
