@@ -52,6 +52,10 @@ p{
 	grid-area: zPrawej;
 }
 
+.zPrawejuDolu{
+	grid-area: zPrawejuDolu;
+}
+
 .container{
 	display: grid;
 	grid-template-columns: 200px 2fr 1fr;
@@ -59,9 +63,16 @@ p{
 	grid-column-gap: 15px;
 	grid-template-areas: 
     "header header header"
-    "nav poSrodku zPrawej"
+	"nav poSrodku zPrawej"
+	"nav poSrodku zPrawejuDolu"
     "footer footer footer";
 	
+}
+
+.left_right{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
 }
 
 .city{
@@ -152,6 +163,7 @@ a:link {
 		"nav"
 		"poSrodku"
 		"zPrawej"
+		"zPrawejuDolu"
 		"footer";
 	}
 
@@ -174,6 +186,7 @@ and (min-width: 640px){
 		"header header"
 		"nav nav"
 		"poSrodku zPrawej"
+		"poSrodku zPrawejuDolu"
 		"footer footer";
 	}
 }
@@ -215,4 +228,11 @@ html{
 .dane_os{
 	text-align: left;
 	line-height: 40px;
+}
+
+@media screen and (min-width: 968px){
+	.resizable{
+		table-layout: fixed;
+		 word-break: break-all;
+	}
 }

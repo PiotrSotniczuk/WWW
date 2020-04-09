@@ -14,7 +14,7 @@
 		<img src="logo.jpeg" alt="logo firmy" id="logo">
 	</header>
 
-	
+
 		<nav>
 			<h2 class="first">MENU</h2>
 			<ul class="menu">
@@ -42,10 +42,10 @@
 			</ul>
 		</nav>
 
-	
+
 		<article class="poSrodku">
 			<h2 class="secound" id="ListLot">Lista Lotów</h2>
-			<table>		
+			<table>
 				<tr>
 					<th>Nr. Lotu</th><th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th>
 				</tr>
@@ -57,59 +57,54 @@
 				<tr>
 					<td><a href="lot.html">105</a></td><td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td>
 				</tr>
-					
+
 				<tr>
 					<td><a href="lot.html">122</a></td><td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td>
 				</tr>
 			</table>
 		</article>
 
-		<section class="zPrawej">
-			<article>
-				<h2 class="third" id="ListLotOp">Lista Lotów Opóźnionych</h2>
-				<table>		
-					<tr>
-						<th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th><th>Opóźnienie</th>
-					</tr>
 
-					<tr class="opozn">
-						<td>Warszawa</td><td>Berlin</td><td>23.03.2020</td><td>5:03</td><td>20min</td>
-					</tr>
+		<article class="zPrawej">
+			<h2 class="third" id="ListLotOp">Lista Lotów Opóźnionych</h2>
+			<table class="resizable">
+				<tr>
+					<th>Skąd</th><th>Dokąd</th><th>data</th><th>Godzina</th><th>Opóźnienie</th>
+				</tr>
+				<tr class="opozn">
+					<td>Warszawa</td><td>Berlin</td><td>23.03.2020</td><td>5:03</td><td>20min</td>
+				</tr>
+				<tr class="opozn">
+					<td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td><td>40min</td>
+				</tr>
 
-					<tr class="opozn">
-						<td>Gdańsk</td><td>Amsterdam</td><td>01.04.2020</td><td>15:12</td><td>40min</td>
-					</tr>
-						
-					<tr class="odwolany">
-						<td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td><td>odwołany</td>
-					</tr>
+				<tr class="odwolany">
+					<td>Kraków</td><td>Warszawa</td><td>16.03.2020</td><td>20:48</td><td>odwołany</td>
+				</tr>
+				<tr class="bopozn">
+					<td>A</td><td>B</td><td>24.03.2020</td><td>15:03</td><td>120min</td>
+				</tr>
+				<tr class="odwolany">
+					<td>Pcim</td><td>Kozia Wólka</td><td>11.4.2019</td><td>10:12</td><td>odwołany</td>
+				</tr>
 
-					<tr class="bopozn">
-						<td>A</td><td>B</td><td>24.03.2020</td><td>15:03</td><td>120min</td>
-					</tr>
+				<tr class="bopozn">
+					<td>K</td><td>W</td><td>26.05.2020</td><td>2:48</td><td>99min</td>
+				</tr>
+				<tr class="bopozn">
+					<td>Warszawa</td><td>Kraków</td><td>17.09.2020</td><td>5:33</td><td>60min</td>
+				</tr>
+				<tr class="odwolany">
+					<td>Gdańsk</td><td>Warszawa</td><td>03.04.2021</td><td>15:19</td><td>odwołany</td>
+				</tr>
 
-					<tr class="odwolany">
-						<td>Pcim</td><td>Kozia Wólka</td><td>11.4.2019</td><td>10:12</td><td>odwołany</td>
-					</tr>
-						
-					<tr class="bopozn">
-						<td>K</td><td>W</td><td>26.05.2020</td><td>2:48</td><td>99min</td>
-					</tr>
+				<tr class="bopozn">
+					<td>Kraków</td><td>Amsterdam</td><td>22.09.2020</td><td>21:18</td><td>115min</td>
+				</tr>
+			</table>
+		</article>
 
-					<tr class="bopozn">
-						<td>Warszawa</td><td>Kraków</td><td>17.09.2020</td><td>5:33</td><td>60min</td>
-					</tr>
-
-					<tr class="odwolany">
-						<td>Gdańsk</td><td>Warszawa</td><td>03.04.2021</td><td>15:19</td><td>odwołany</td>
-					</tr>
-						
-					<tr class="bopozn">
-						<td>Kraków</td><td>Amsterdam</td><td>22.09.2020</td><td>21:18</td><td>115min</td>
-					</tr>
-				</table>
-			</article>
-
+		<article class="zPrawejuDolu">
 			<form method="post">
 				<p>Skąd</p>
 				<select name="Skad">
@@ -158,10 +153,7 @@
 				<input type="reset" value="Wyczyść dane">
 
 			</form>
-			
-		</section>
-
-
+		</article>
 
 	<footer>
 		Autor: Piotr Sotniczuk
