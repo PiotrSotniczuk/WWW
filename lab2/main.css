@@ -24,7 +24,6 @@ th{
 
 body{
 	text-align: center;
-	margin: 0px;
 }
 
 h1{
@@ -219,10 +218,19 @@ html{
 	width: 100%;
 	height: 100%;
 	margin: auto;
+	top: 0;
+	left: 0px;
 	padding-top: 25%;
 	font-size: xx-large;
 	font-weight: 900;
-	background-color: rgba(255, 0, 0, 0.3);
+	background-color: rgba(255, 102, 0, 0.747);
+}
+
+.block_text{
+	background-color: white;
+	height: 10%;
+	width: 40%;
+	margin: auto;
 }
 
 .dane_os{
