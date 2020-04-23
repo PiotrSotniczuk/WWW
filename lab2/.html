@@ -6,7 +6,6 @@
 	<title>Strona Główna</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="screen" href="main.css">
-	<script src="main.js"></script>
 </head>
 <body class="container">
 	<header>
@@ -105,7 +104,7 @@
 		</article>
 
 		<article class="zPrawejuDolu">
-			<form method="post">
+			<form method="post" id="formularz">
 				<p>Skąd</p>
 				<select name="Skad">
 					<option selected>Warszawa</option>
@@ -131,13 +130,7 @@
 				</div>
 
 				<p>Data</p>
-				<select name="Data">
-					<option selected>20.03.2020</option>
-					<option>21.03.2020</option>
-					<option>22.03.2020</option>
-					<option>23.03.2020</option>
-					<option>24.03.2020</option>
-				</select>
+				<input type="date">
 
 				<p>Godzina</p>
 				<select name="Godzina">
@@ -149,7 +142,7 @@
 				</select>
 
 				<p>Działanie</p>
-				<input type="submit" value="Wyślij formularz">
+				<input type="button" value="Wyślij formularz" disabled>
 				<input type="reset" value="Wyczyść dane">
 
 			</form>
@@ -159,4 +152,5 @@
 		Autor: Piotr Sotniczuk
 	</footer>
 </body>
+<script src="main.js"></script>
 </html>
