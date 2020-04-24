@@ -76,8 +76,7 @@ function Pokaz(ev : MouseEvent) {
     text.innerHTML = im + ' ' + nazw + '\n' + skad + ' ' + dokad + '\n' + data + ' ' + godz + '\n';
 
     rezerwacja.appendChild(text);
-
-
+    //stopPropagation zeby submit nie szedl w gore Event.preventDefault()  nie wysle formularza do servera
 
 }
 
