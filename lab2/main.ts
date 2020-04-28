@@ -1,17 +1,3 @@
-//npx tsc -lib es2016,dom main.ts
-
-//let opoznione = document.getElementById('');
-//
-//
-//function fib(n : number): number{
-//    if(n<2) return n;
-//    return fib(n-1) + fib(n-2);
-//}
-//
-//function policzFib(ev: MouseEvent){
-//    
-//}
-
 let formularz = document.getElementById('formularz');
 formularz.addEventListener('input',NaprawPrz);
 
@@ -25,11 +11,11 @@ function SprDane(){
     ("select[name='Skad']") as HTMLInputElement).value;
     const dokad = (document.querySelector
     ("select[name='Dokad']") as  HTMLInputElement).value;
-    const data = (document.querySelector
-    ("input[type='date']") as  HTMLInputElement).value;
+    const data = new Date((document.querySelector
+    ("input[type='date']") as  HTMLInputElement).value);
 
-
-    if(im && nazw && skad != dokad && data > Date.now().toString()){
+    let today = new Date();
+    if(im && nazw && skad !== dokad && data > today){
         console.log("dobrze")
         return true;
     }
