@@ -2,7 +2,8 @@
   "name": "lab2",
   "version": "1.0.0",
   "dependencies": {
-    "@types/es6-promise": "^3.3.0"
+    "@types/es6-promise": "^3.3.0",
+    "@types/node": "^13.13.4"
   },
   "main": "main.js",
   "devDependencies": {
@@ -24,6 +25,8 @@
   "license": "ISC",
   "description": "",
   "compilerOptions": {
-    "lib": ["es2015"]
+    "lib": [
+      "es2015"
+    ]
   }
 }

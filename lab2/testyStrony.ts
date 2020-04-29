@@ -7,14 +7,14 @@ import {Builder, driver, ThenableWebDriver} from 'mocha-webdriver';
 //npx mocha -r ts-node/register testyStrony.ts   do testowania tego na poczatku
 
 
-describe('testDrugi', function () {
+describe('testDrugi', () => {
 
     let driver: ThenableWebDriver = undefined;
 
     beforeEach(async function () {
         this.timeout(20000);
         driver = new Builder().forBrowser('firefox').build();
-        await driver.get('file:///home/piotr/PRZEDMIOTy/WWW/lab2/.html');
+        await driver.get('file://' + process.cwd() + '/.html');
     });
 
     afterEach(async function () {
@@ -22,7 +22,24 @@ describe('testDrugi', function () {
         driver = undefined;
     });
 
-    it('check if all options in select available', async function () {
+    async function fill_forms(imie, nazw, skad, dokad, data, godz){
+        await driver.find("input[name='Imie']").sendKeys(imie);
+        await driver.find("input[name='Nazwisko']").sendKeys(nazw);
+        await driver.find("select[name = 'Skad']").sendKeys(skad);
+        await driver.find("select[name = 'Dokad']").sendKeys(dokad);
+        await driver.find("input[type = 'date']").sendKeys(data);
+        await driver.find("select[name = 'Godzina']").sendKeys(godz);
+    }
+
+    function add_year_parse_date(ile : number){
+        let today = new Date();
+        today.setFullYear(today.getFullYear() + ile, today.getMonth(), today.getDay());
+        let parsed = today.getFullYear().toString() + "-" +
+            ("0" + today.getMonth().toString()).slice(-2) + "-" + ("0" + today.getDate().toString().slice(-2));
+        return parsed;
+    }
+
+    it('check if all options in select available', async () => {
 
         expect(await driver.find("select[name='Dokad']").getText()).to.include('Warszawa');
         expect(await driver.find("select[name='Dokad']").getText()).to.include('Amsterdam');
@@ -43,15 +60,10 @@ describe('testDrugi', function () {
         expect(await driver.find("select[name='Godzina']").getText()).to.include('18:00');
     });
 
-    it('check if can click after correct filling example forms and after reset', async function () {
+    it('check if can click after correct filling example forms and after reset', async () => {
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
-
-        await driver.find("input[name='Imie']").sendKeys('Jan');
-        await driver.find("input[name='Nazwisko']").sendKeys('Kowalski');
-        await driver.find("select[name = 'Skad']").sendKeys('Warszawa');
-        await driver.find("select[name = 'Dokad']").sendKeys('Pcim');
-        await driver.find("input[type = 'date']").sendKeys('2021-01-11');
-        await driver.find("select[name = 'Godzina']").sendKeys('16:00');
+        let date_Str = add_year_parse_date(1);
+        await fill_forms("Jan", "Kowalski", "Warszawa", "Pcim", date_Str, "16:00");
 
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.true;
 
@@ -60,16 +72,11 @@ describe('testDrugi', function () {
         //expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
     });
 
-    it('check if partially filled or badly filled forms work', async function () {
-
-        await driver.find("input[name='Imie']").sendKeys('Piotr');
-        await driver.find("input[name='Nazwisko']").sendKeys('Sotniczuk');
-        await driver.find("select[name ='Skad']").sendKeys('Amsterdam');
-        await driver.find("select[name='Dokad']").sendKeys('Gdańsk');
+    it('check if partially filled or badly filled forms work', async () => {
+        await fill_forms("Piotr", "Sotniczuk", "Amsterdam", "Gdańsk", "", "");
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
 
-        await driver.find("input[type='date']").sendKeys('2021-05-25');
-        await driver.find("select[name='Godzina']").sendKeys('14:00');
+        await fill_forms("Piotr", "Sotniczuk", "Amsterdam", "Gdańsk", add_year_parse_date(3), "14:00");
 
         // Form is OK
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.true;
@@ -77,29 +84,28 @@ describe('testDrugi', function () {
         // Bad date
         await driver.find("input[type = 'date']").sendKeys('2019-02-05');
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
-        await driver.find("input[type = 'date']").sendKeys('2021-05-25');
+        await driver.find("input[type = 'date']").sendKeys(add_year_parse_date(1));
 
         // Destination = Start
         await driver.find("select[name = 'Dokad']").sendKeys('Amsterdam');
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
     });
 
-    it('check what the popup is showing', async function () {
-
-        await driver.find("input[name='Imie']").sendKeys('Piotr');
-        await driver.find("input[name='Nazwisko']").sendKeys('Sotniczuk');
-        await driver.find("select[name = 'Skad']").sendKeys('Amsterdam');
-        await driver.find("select[name = 'Dokad']").sendKeys('Gdańsk');
-        await driver.find("input[type = 'date']").sendKeys('2023-02-13');
-        await driver.find("select[name = 'Godzina']").sendKeys('10:00');
+    it('check what the popup is showing', async () => {
+        await fill_forms("Piotr", "Sotniczuk", "Amsterdam", "Gdańsk", add_year_parse_date(3), "10:00");
 
         // Form is OK
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.true;
 
         await driver.find("input[value='Wyślij formularz']").doClick();
 
-        // TODO Sometimes Shows correctly sometimes is 12:00 instead
+        // TODO Czasem dziala a czasem daje 12:00 tak jakby nie zdazyl wyslac 10:00?
         expect(await driver.find("div[class='block_text']").getAttribute("innerHTML")).
-        to.equal("Piotr Sotniczuk\nAmsterdam Gdańsk\n2023-02-13 10:00\n");
+        to.equal("Piotr Sotniczuk\nAmsterdam Gdańsk\n"+ add_year_parse_date(3) + " 10:00\n");
+
+        // Blokuje przycisk przed kliknięciem
+        expect(await driver.find("input[value='Wyślij formularz']").click()
+            .then(() => true).catch(() => false)).to.equal(false);
+
     });
 });
