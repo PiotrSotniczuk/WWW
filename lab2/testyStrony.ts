@@ -34,30 +34,25 @@ describe('testDrugi', () => {
     function add_year_parse_date(ile : number){
         let today = new Date();
         today.setFullYear(today.getFullYear() + ile, today.getMonth(), today.getDay());
-        let parsed = today.getFullYear().toString() + "-" +
-            ("0" + today.getMonth().toString()).slice(-2) + "-" + ("0" + today.getDate().toString().slice(-2));
-        return parsed;
+        return (today.getFullYear().toString() + "-" +
+            ("0" + today.getMonth().toString()).slice(-2) + "-" + ("0" + today.getDate().toString().slice(-2)));
+    }
+
+    async function check_options(name : String, options : String[]){
+        for(let option of options) {
+            expect(await driver.find("select[name='" + name + "']").getText()).to.include(option);
+        }
     }
 
     it('check if all options in select available', async () => {
 
-        expect(await driver.find("select[name='Dokad']").getText()).to.include('Warszawa');
-        expect(await driver.find("select[name='Dokad']").getText()).to.include('Amsterdam');
-        expect(await driver.find("select[name='Dokad']").getText()).to.include('Pcim');
-        expect(await driver.find("select[name='Dokad']").getText()).to.include('Kraków');
-        expect(await driver.find("select[name='Dokad']").getText()).to.include('Gdańsk');
+        let city_options = ["Warszawa", "Amsterdam", "Kraków", "Gdańsk", "Pcim"];
+        await check_options("Dokad", city_options);
 
-        expect(await driver.find("select[name='Skad']").getText()).to.include('Warszawa');
-        expect(await driver.find("select[name='Skad']").getText()).to.include('Amsterdam');
-        expect(await driver.find("select[name='Skad']").getText()).to.include('Pcim');
-        expect(await driver.find("select[name='Skad']").getText()).to.include('Kraków');
-        expect(await driver.find("select[name='Skad']").getText()).to.include('Gdańsk');
+        await check_options("Skad", city_options);
 
-        expect(await driver.find("select[name='Godzina']").getText()).to.include('10:00');
-        expect(await driver.find("select[name='Godzina']").getText()).to.include('12:00');
-        expect(await driver.find("select[name='Godzina']").getText()).to.include('14:00');
-        expect(await driver.find("select[name='Godzina']").getText()).to.include('16:00');
-        expect(await driver.find("select[name='Godzina']").getText()).to.include('18:00');
+        let hour_options = ['10:00', '12:00', '14:00', '16:00', '18:00'];
+        await check_options("Godzina", hour_options);
     });
 
     it('check if can click after correct filling example forms and after reset', async () => {
