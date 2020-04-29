@@ -68,8 +68,7 @@ describe('testDrugi', () => {
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.true;
 
         await driver.find("input[type='reset']").doClick();
-        //TODO bug gdy resetujesz to nadal jest enabled
-        //expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
+        expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
     });
 
     it('check if partially filled or badly filled forms work', async () => {

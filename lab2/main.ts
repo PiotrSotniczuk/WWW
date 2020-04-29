@@ -1,5 +1,6 @@
 let formularz = document.getElementById('formularz');
-formularz.addEventListener('input',NaprawPrz);
+formularz.addEventListener('change',NaprawPrz);
+formularz.addEventListener('reset', NaprawPrz);
 
 
 function SprDane(){
@@ -23,9 +24,9 @@ function SprDane(){
     return false;
 }
 
-function NaprawPrz(ev : InputEvent){
+function NaprawPrz(ev : Event){
     console.log("jest");
-    if(SprDane()){
+    if(SprDane() && ev.type !== 'reset'){
         document.querySelector("[type='button']").removeAttribute('disabled');
     }else{
         document.querySelector("[type='button']").setAttribute('disabled', 'yes');
