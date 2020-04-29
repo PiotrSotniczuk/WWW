@@ -9,26 +9,18 @@ import {Builder, driver, ThenableWebDriver} from 'mocha-webdriver';
 
 describe('testDrugi', () => {
 
-    let driver: ThenableWebDriver = undefined;
-
     beforeEach(async function () {
         this.timeout(20000);
-        driver = new Builder().forBrowser('firefox').build();
         await driver.get('file://' + process.cwd() + '/.html');
-    });
-
-    afterEach(async function () {
-        await driver.close();
-        driver = undefined;
     });
 
     async function fill_forms(imie, nazw, skad, dokad, data, godz){
         await driver.find("input[name='Imie']").sendKeys(imie);
         await driver.find("input[name='Nazwisko']").sendKeys(nazw);
-        await driver.find("select[name = 'Skad']").sendKeys(skad);
-        await driver.find("select[name = 'Dokad']").sendKeys(dokad);
+        if(skad !== "") await driver.find("select[name = 'Skad'] option[name = '" + skad + "']").doClick();
+        if(dokad !== "") await driver.find("select[name = 'Dokad'] option[name = '" + dokad + "']").doClick();
         await driver.find("input[type = 'date']").sendKeys(data);
-        await driver.find("select[name = 'Godzina']").sendKeys(godz);
+        if(godz !== "") await driver.find("option[name = '" + godz + "']").doClick();
     }
 
     function add_year_parse_date(ile : number){
@@ -93,7 +85,6 @@ describe('testDrugi', () => {
 
         await driver.find("input[value='Wyślij formularz']").doClick();
 
-        // TODO Czasem dziala a czasem daje 12:00 tak jakby nie zdazyl wyslac 10:00?
         expect(await driver.find("div[class='block_text']").getAttribute("innerHTML")).
         to.equal("Piotr Sotniczuk\nAmsterdam Gdańsk\n"+ add_year_parse_date(3) + " 10:00\n");
 
