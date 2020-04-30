@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>QUIZ</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>QUIZ</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="main.css">
 </head>
-<body class="container">
-    <header class="tlo">
-        Witaj, może zrobisz jakiś quiz??
-    </header>
+<body>
+	<article id="quiz" class="tlo quizGrid">
+		<div id="wstep">
+			Liczyć każdy może
+		</div>
+		<div id="stan">a</div>
+		<div id="pytanie">s</div>
+		<input type="text" id="odpowiedz">
+		<input type="button" value="Dalej" id="dalej">
+		<input type="button" value="Wstecz" id="wstecz">
+		<input type="submit" value="Skończ" id="skoncz">
+		<input type="submit" value="Anuluj" id="anuluj">
 
-    <main class="tlo">
-        <form method="post">
-            <select name="SelName">
-                <option name="aaa">aaa</option>
-            </select>
+	</article>
 
-            <input type="button" value="Wybierz">
-        </form>
-        <br>
-        <br>
-        Najlepsi z najlepszych:
-        <ul id="wyniki">
-            <li>Piotr Sotniczuk</li>
-        </ul>
-    </main>
+	<article class="startGrid" id="startowy">
+		<header class="tlo">
+			Witaj, może zrobisz jakiś quiz??
+		</header>
 
-    <footer>
-        Autor: Piotr Sotniczuk
-    </footer>
+		<main class="tlo">
+			<input type="button" value="Start">
+			<br>
+			<br>
+			Najlepsi z najlepszych:
+			<ul id="wyniki">
+				<li>Piotr Sotniczuk</li>
+			</ul>
+		</main>
+	</article>
+
+	<footer>
+		Autor: Piotr Sotniczuk
+	</footer>
 </body>
 <script src="main.js"></script>
 </html>

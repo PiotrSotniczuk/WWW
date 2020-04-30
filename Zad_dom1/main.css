@@ -1,9 +1,5 @@
-footer{
-    background-color: aquamarine;
-    color: blue;
-    font-family: sans-serif;
-    font-size: xx-small;
-    grid-area: footer;
+.tlo{
+    background-color: antiquewhite;
 }
 
 body{
@@ -11,25 +7,73 @@ body{
     text-align: center;
 }
 
+footer{
+    background-color: aquamarine;
+    color: blue;
+    font-family: sans-serif;
+    font-size: xx-small;
+}
+
 header{
     grid-area: header;
-    font-size: xx-large;
+    font-size: x-large;
 }
 
 main{
     grid-area: main;
 }
 
-.tlo{
-    background-color: antiquewhite;
+.startGrid{
+    display: grid;
+    width: 80%;
+    grid-row-gap: 15px;
+    margin: auto;
+    grid-template-areas:
+            "header"
+            "main";
 }
 
-.container{
+#quiz{
+    display: none;
+}
+
+#wstep{
+    grid-area: wstep;
+}
+
+#stan{
+    grid-area: stan;
+}
+
+#pytanie{
+    grid-area: pytanie;
+}
+
+#odpowiedz{
+    grid-area: odpowiedz;
+}
+#wstecz{
+    grid-area: wstecz;
+}
+
+#dalej{
+    grid-area: dalej;
+}
+
+#anuluj{
+    grid-area: anuluj;
+}
+#skoncz {
+    grid-area: skoncz;
+}
+
+.quizGrid{
     display: grid;
-    /*grid-template-rows: 1fr 80% 1fr;*/
     grid-row-gap: 15px;
+    margin: auto;
     grid-template-areas:
-            ". header ."
-            ". main ."
-            "footer footer footer";
+            "wstep stan"
+            "pytanie odpowiedz"
+            "wstecz dalej"
+            "anuluj skoncz";
 }
