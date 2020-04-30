@@ -33,6 +33,11 @@ main{
             "main";
 }
 
+.mniejsze{
+    width: 20%;
+    margin: auto;
+}
+
 #quiz{
     display: none;
 }
@@ -47,9 +52,12 @@ main{
 
 #pytanie{
     grid-area: pytanie;
+    text-align: right;
 }
 
 #odpowiedz{
+    width: 10%;
+    margin-left: 10px;
     grid-area: odpowiedz;
 }
 #wstecz{
