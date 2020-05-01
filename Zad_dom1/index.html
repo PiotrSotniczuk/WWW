@@ -14,23 +14,27 @@
 		</div>
 		<div id="stan">
 			<div id="nrPytania"></div>
-			<div id="czas"></div>
+			<div id="czas">Czas: 0sek</div>
+			<div id="kara"></div>
 		</div>
 		<div id="pytanie"></div>
-		<input type="text" id="odpowiedz" class="mniejsze">
+		<div id="wejscie">
+			<input type="number" id="odpowiedz" required>
+			<span id="poprawnosc "></span>
+		</div>
 		<input type="button" value="Dalej" id="dalej" class="mniejsze">
 		<input type="button" value="Wstecz" id="wstecz" class="mniejsze">
-		<input type="submit" value="Skończ" id="skoncz" class="mniejsze">
+		<input type="submit" value="Skończ" id="skoncz" class="mniejsze" disabled>
 		<input type="submit" value="Anuluj" id="anuluj" class="mniejsze">
 
 	</article>
 
-	<article class="startGrid" id="startowy">
-		<header class="tlo">
+	<article class="startGrid tlo" id="startowy">
+		<header>
 			Witaj, może zrobisz jakiś quiz??
 		</header>
 
-		<main class="tlo">
+		<main>
 			<input type="button" value="Start">
 			<br>
 			<br>
