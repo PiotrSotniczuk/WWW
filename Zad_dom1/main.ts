@@ -1,6 +1,8 @@
+import {appendSubmit, addWynik, wyswietlRanking} from "./submodul.js";
 // typy
 type Pyt = string;
 type Odp = number;
+// TODO
 type Kara = number;
 
 type IPytanie = [Pyt, Odp, Kara];
@@ -40,20 +42,39 @@ const elPytanie = document.getElementById("pytanie");
 const elKara = document.getElementById("kara");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 const elWstep = document.getElementById("wstep");
+const elPoSkonczeniu = document.getElementById("poSkonczeniu");
+const elWynikText = document.getElementById("wynikText");
+const elZZap = document.getElementById("zZap");
+const elBezZap = document.getElementById("bezZap");
+const elNick = document.getElementById("nick") as HTMLInputElement;
+const elRanking = document.getElementById("ranking");
 
 
 // zmienne
 let Interwal;
 let aktPyt = 0;
 let Odpowiedzi = new Array(quizSize);
+let Statystyki = new Array(quizSize);
 let sekundy = 0;
 let trybSpr = 0;
 let wynik;
+let nick = "";
+
+wyswietlRanking(elRanking);
+
+function inicjujTablice ( tablica : Array<number>, wartosc) {
+    for(let i=0; i<tablica.length; i++){
+        tablica[i] = wartosc;
+    }
+}
+
+inicjujTablice(Odpowiedzi, "");
+inicjujTablice(Statystyki, 0);
 
 function pushTimer() {
     sekundy++;
     elCzas.innerHTML = "Czas: " + sekundy.toString() + "sek";
-    // TODO statystyki[]++
+    Statystyki[aktPyt]++;
 }
 
 function fillForms(move : number) {
@@ -97,6 +118,7 @@ elStartButton.addEventListener('click', () => {
     elQuiz.style.display = "grid";
     fillForms(0);
     Interwal = setInterval(pushTimer, 1000);
+    nick = elNick.value;
 });
 
 elDalej.addEventListener('click', () => {
@@ -107,16 +129,26 @@ elWstecz.addEventListener('click', () => {
     fillForms(-1);
 });
 
-elAnuluj.addEventListener('click', () => {
-    clearInterval(Interwal);
+export function odnowGlob(){
     aktPyt = 0;
-    Odpowiedzi = new Array(quizSize);
     elOdpowiedz.value = "";
     sekundy = 0;
     elStartowy.style.display = "block";
     elQuiz.style.display = "none";
     elSkoncz.setAttribute('disabled', 'yes');
-    // TODO zeruj statystyki
+    elOdpowiedz.removeAttribute('disabled');
+    elAnuluj.removeAttribute('disabled');
+    trybSpr = 0;
+    inicjujTablice(Odpowiedzi, "");
+    inicjujTablice(Statystyki, 0);
+    elPoSkonczeniu.style.display = "none";
+    nick = "";
+    wyswietlRanking(elRanking);
+}
+
+elAnuluj.addEventListener('click', () => {
+    clearInterval(Interwal);
+    odnowGlob();
 });
 
 elOdpowiedz.addEventListener('input', () => {
@@ -142,23 +174,24 @@ function policzWynik() : number{
 }
 
 function wstawZapis() {
-    let wynikText;
-    wynikText = document.createElement('div');
-    wynikText.innerHTML = "Twój wynik to " + wynik;
-    elWstep.appendChild(wynikText);
+    elPoSkonczeniu.style.display = "block";
 
-    appendSubmit(elWstep, "Zapisz sam wynik");
-    // TODO dodaj reakje po kliknieciu
-    appendSubmit(elWstep, "Zapisz wynik + Statystyki");
+    elWynikText.innerHTML = "Twój wynik to " + wynik;
+
+    console.log(Odpowiedzi);
+    console.log(Statystyki);
 }
 
-function appendSubmit(father : HTMLElement, value : string) : HTMLInputElement{
-    let submit = document.createElement('input');
-    submit.setAttribute('type', 'submit');
-    submit.setAttribute('value', value);
-    father.appendChild(submit);
-    return submit;
-}
+elBezZap.addEventListener('click', () => {
+    addWynik(wynik, nick, null, new Array(Odpowiedzi));
+    console.log("moze sie udalo2" + Odpowiedzi);
+});
+
+elZZap.addEventListener('click',() => {
+    addWynik(wynik, nick, new Array(Statystyki), (Odpowiedzi));
+    console.log("moze sie udalo" + Odpowiedzi);
+});
+
 
 elSkoncz.addEventListener('click', () => {
     clearInterval(Interwal);
@@ -187,8 +220,3 @@ elSkoncz.addEventListener('click', () => {
     });
 
 });
-/*elStartowy.style.display = "block";
-elQuiz.style.display = "none";
-elSkoncz.setAttribute('disabled', 'yes');
-act=0;
-elOdpowiedz.value = "";*/

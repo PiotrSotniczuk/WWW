@@ -139,7 +139,7 @@ input:valid+span:after {
     height: 100%;
     margin: auto;
     top: 0;
-    left: 0px;
+    left: 0;
     padding-top: 25%;
     font-size: x-large;
     font-weight: 900;
@@ -154,4 +154,13 @@ input:valid+span:after {
 
 #powitanie{
     font-size: x-large;
+}
+
+#poSkonczeniu{
+    display: none;
+}
+
+#ranking{
+    text-align: left;
+    margin-left: 30%;
 }
