@@ -1,0 +1,33 @@
+{
+  "name": "lab8",
+  "version": "1.0.0",
+  "description": "lab8_npm_init_",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "build": "tsc --target es2015 program.ts",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "."
+      ],
+      "extensions": "ts"
+    }
+  },
+  "author": "Piotr",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "npm-watch": "^0.6.0",
+    "sqlite3": "^4.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "@types/sqlite3": "^3.1.6",
+    "ts-node": "^8.10.1"
+  }
+}
