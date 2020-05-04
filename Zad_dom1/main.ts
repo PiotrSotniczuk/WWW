@@ -1,14 +1,13 @@
 import {addWynik, wyswietlRanking} from "./modulDB.js";
-import {appendSubmit} from "./modulWork.js";
+import {appendSubmit, inicjujTablice, policzWynik, timerClass, wstawZapis} from "./modulWork.js";
+
 // typy
 type Pyt = string;
 type Odp = number;
-// TODO
 type Kara = number;
-
 type IPytanie = [Pyt, Odp, Kara];
 
-interface IQuiz {
+export interface IQuiz {
     zadania: IPytanie[];
 }
 
@@ -17,12 +16,8 @@ const jsonString: string = `{
     "zadania": [["2 + 3", 5, 5], ["2 -(-24:4)", 8, 20], ["2 * 9", 18, 10], ["4 + 8", 12, 10]]
 }`;
 
-const quizData = JSON.parse(jsonString);
-const quizSize = quizData.zadania.length;
-
-// https://codepen.io/cathydutton/pen/GBcvo
-// const tab = new Array(10); do statystyk
-// przeskawinaie onclick
+const quizData : IQuiz = JSON.parse(jsonString);
+const quizSize : number = quizData.zadania.length;
 
 // elementy przyciskowe i nasluchujace
 const elStartButton = document.querySelector("input[value='Start']");
@@ -42,41 +37,26 @@ const elNrPytania = document.getElementById("nrPytania");
 const elPytanie = document.getElementById("pytanie");
 const elKara = document.getElementById("kara");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
-const elWstep = document.getElementById("wstep");
 const elPoSkonczeniu = document.getElementById("poSkonczeniu");
-const elWynikText = document.getElementById("wynikText");
 const elZZap = document.getElementById("zZap");
 const elBezZap = document.getElementById("bezZap");
 const elNick = document.getElementById("nick") as HTMLInputElement;
 const elRanking = document.getElementById("ranking");
 
 
-// zmienne
+// zmienne globalne
 let Interwal;
-let aktPyt = 0;
+export let aktPyt = 0;
 let Odpowiedzi = new Array(quizSize);
-let Statystyki = new Array(quizSize);
-let sekundy = 0;
+export let Statystyki = new Array(quizSize);
+let timer = new timerClass();
 let trybSpr = 0;
 let wynik;
 let nick = "";
 
 wyswietlRanking(elRanking);
-
-function inicjujTablice ( tablica : Array<number>, wartosc) {
-    for(let i=0; i<tablica.length; i++){
-        tablica[i] = wartosc;
-    }
-}
-
 inicjujTablice(Odpowiedzi, "");
 inicjujTablice(Statystyki, 0);
-
-function pushTimer() {
-    sekundy++;
-    elCzas.innerHTML = "Czas: " + sekundy.toString() + "sek";
-    Statystyki[aktPyt]++;
-}
 
 function fillForms(move : number) {
     aktPyt += move;
@@ -118,7 +98,8 @@ elStartButton.addEventListener('click', () => {
     elStartowy.style.display = "none";
     elQuiz.style.display = "grid";
     fillForms(0);
-    Interwal = setInterval(pushTimer, 1000);
+    // o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
+    Interwal = setInterval(() => {timer.pchnijTimer(Statystyki);}, 1000);
     nick = elNick.value;
 });
 
@@ -133,7 +114,7 @@ elWstecz.addEventListener('click', () => {
 export function odnowGlob(){
     aktPyt = 0;
     elOdpowiedz.value = "";
-    sekundy = 0;
+    timer.setSekundy(0);
     elStartowy.style.display = "block";
     elQuiz.style.display = "none";
     elSkoncz.setAttribute('disabled', 'yes');
@@ -164,26 +145,6 @@ elOdpowiedz.addEventListener('input', () => {
     elSkoncz.removeAttribute('disabled');
 });
 
-function policzWynik() : number{
-    let i;
-    let wynik = sekundy;
-    for( i = 0; i < Odpowiedzi.length; i++){
-        if(Odpowiedzi[i] != quizData.zadania[i][1]){
-            wynik += quizData.zadania[i][2];
-        }
-    }
-    return wynik;
-}
-
-function wstawZapis() {
-    elPoSkonczeniu.style.display = "block";
-
-    elWynikText.innerHTML = "Twój wynik to " + wynik;
-
-    console.log(Odpowiedzi);
-    console.log(Statystyki);
-}
-
 elBezZap.addEventListener('click', () => {
     addWynik(wynik, nick, null, new Array(Odpowiedzi));
     console.log("moze sie udalo2" + Odpowiedzi);
@@ -197,7 +158,7 @@ elZZap.addEventListener('click',() => {
 
 elSkoncz.addEventListener('click', () => {
     clearInterval(Interwal);
-    wynik = policzWynik();
+    wynik = policzWynik(timer.getSekundy(), Odpowiedzi, quizData);
 
     let popup = document.createElement('div');
 
@@ -218,7 +179,7 @@ elSkoncz.addEventListener('click', () => {
         trybSpr = 1;
         popup.remove();
         fillForms(0);
-        wstawZapis();
+        wstawZapis(wynik);
     });
 
 });
