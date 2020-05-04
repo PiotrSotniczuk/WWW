@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "removeComments": true,
+    "sourceMap": true,
+    "lib": ["es5", "DOM", "ES2015"],
+    "listFiles": false,
+    "watch": false
+  },
+  "include": [
+    "*.ts"
+  ]
+}
