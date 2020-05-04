@@ -1,14 +1,5 @@
 import {odnowGlob} from "./main.js";
 
-export function appendSubmit(father : HTMLElement, value : string) : HTMLInputElement{
-    let submit = document.createElement('input');
-    submit.setAttribute('type', 'submit');
-    submit.setAttribute('value', value);
-    father.appendChild(submit);
-    return submit;
-}
-
-
 function otworzBaze() {
     if (!indexedDB) {
         console.log("nie dziala indexedDB");
@@ -71,9 +62,9 @@ export function wyswietlRanking(lista) {
         lista.innerHTML = "";
         index.openCursor().onsuccess = function (event) {
             let cursor = event.target.result;
-            if (cursor && i < 10) {
-
-                lista.innerHTML += '<li>' + cursor.value.punkty + 'pkt ' + cursor.value.nick + '</li>';
+            if (cursor && i < 5) {
+                i++;
+                lista.innerHTML += '<li>' + i + ". " + cursor.value.punkty + 'pkt ' + cursor.value.nick + '</li>';
                 cursor.continue();
             } else {
                 console.log('Entries all displayed.');

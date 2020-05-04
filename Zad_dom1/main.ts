@@ -1,4 +1,5 @@
-import {appendSubmit, addWynik, wyswietlRanking} from "./submodul.js";
+import {addWynik, wyswietlRanking} from "./modulDB.js";
+import {appendSubmit} from "./modulWork.js";
 // typy
 type Pyt = string;
 type Odp = number;
@@ -144,6 +145,7 @@ export function odnowGlob(){
     elPoSkonczeniu.style.display = "none";
     nick = "";
     wyswietlRanking(elRanking);
+    elNick.value = "nick";
 }
 
 elAnuluj.addEventListener('click', () => {

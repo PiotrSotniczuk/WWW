@@ -1,3 +1,4 @@
+/* ogólne */
 .tlo{
     background-color: antiquewhite;
     width: 80%;
@@ -8,7 +9,7 @@ html{
 }
 
 body{
-    /*https://uwalls.pl/gallery/187/10988_thumb_b600.jpg*/
+    /* https://uwalls.pl/gallery/187/10988_thumb_b600.jpg */
     background-image: url("tapeta.jpg");
     text-align: center;
 }
@@ -20,6 +21,7 @@ footer{
     font-size: xx-small;
 }
 
+/* uzywane do strony startowej */
 header{
     grid-area: header;
     font-size: x-large;
@@ -38,6 +40,7 @@ main{
             "main";
 }
 
+/* uzywane do strony Quizu*/
 .mniejsze{
     width: 30%;
     margin: auto;
@@ -47,6 +50,20 @@ main{
     display: none;
 }
 
+#poSkonczeniu{
+    display: none;
+}
+
+#odpowiedz{
+    width: 20%;
+    margin-left: 20px;
+}
+
+#powitanie{
+    font-size: x-large;
+}
+
+/* nazwy gridów */
 #wstep{
     grid-area: wstep;
 }
@@ -57,17 +74,10 @@ main{
 
 #pytanie{
     grid-area: pytanie;
-    text-align: right;
 }
 
 #wejscie{
     grid-area: wejscie;
-    text-align: left;
-}
-
-#odpowiedz{
-    width: 20%;
-    margin-left: 20px;
 }
 
 #wstecz{
@@ -84,20 +94,10 @@ main{
 #skoncz {
     grid-area: skoncz;
 }
-
-.quizGrid{
-    display: grid;
-    grid-row-gap: 15px;
-    margin: auto;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-            "wstep stan"
-            "pytanie wejscie"
-            "wstecz dalej"
-            "anuluj skoncz";
-}
-
+/* gridy w zaleznosci od rozmiaru */
 @media screen and (max-width: 640px){
+
+
     .quizGrid{
         display: grid;
         grid-template-columns: auto;
@@ -116,22 +116,56 @@ main{
     #pytanie{
         text-align: center;
     }
-
     #wejscie{
         text-align: center;
     }
+    #ranking{
+        margin-left: 5%;
+        text-align: left;
+    }
 }
 
-/*https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number*/
+@media screen and (min-width: 640px){
+
+
+    .quizGrid{
+        display: grid;
+        grid-row-gap: 30px;
+        margin: auto;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+                "wstep stan"
+                "pytanie wejscie"
+                "wstecz dalej"
+                "anuluj skoncz";
+    }
+
+    #pytanie{
+        text-align: right;
+    }
+    #wejscie{
+        text-align: left;
+    }
+    #ranking{
+        text-align: left;
+        margin-left: 40%;
+    }
+}
+
+/* wyswietlanie czy wprowadzona odpowiedz jest numerem */
+
+/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number */
+
 input:invalid+span:after {
     content: '✖';
     padding-left: 5px;
 }
-
 input:valid+span:after {
     content: '✓';
     padding-left: 5px;
 }
+
+/* klasy użyteczne do popupu */
 
 .block{
     position: fixed;
@@ -150,17 +184,4 @@ input:valid+span:after {
     background-color: white;
     width: 50%;
     margin: auto;
-}
-
-#powitanie{
-    font-size: x-large;
-}
-
-#poSkonczeniu{
-    display: none;
-}
-
-#ranking{
-    text-align: left;
-    margin-left: 30%;
 }
