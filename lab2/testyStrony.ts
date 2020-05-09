@@ -7,7 +7,7 @@ import {Builder, driver, ThenableWebDriver} from 'mocha-webdriver';
 //npx mocha -r ts-node/register testyStrony.ts   do testowania tego na poczatku
 
 
-describe('testDrugi', () => {
+describe('testFormularza', () => {
 
     beforeEach(async function () {
         this.timeout(20000);
@@ -68,7 +68,7 @@ describe('testDrugi', () => {
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.true;
 
         // Bad date
-        await driver.find("input[type = 'date']").sendKeys('2019-02-05');
+        await driver.find("input[type = 'date']").sendKeys(add_year_parse_date(-1));
         expect(await driver.find("input[value='Wyślij formularz']").isEnabled()).to.be.false;
         await driver.find("input[type = 'date']").sendKeys(add_year_parse_date(1));
 
