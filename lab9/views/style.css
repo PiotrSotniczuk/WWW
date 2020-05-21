@@ -1,3 +1,22 @@
 body{
     background-color: aqua;
+    text-align: center;
+}
+
+.mem{
+    width: 35%;
+    display: block;
+    margin: auto;
+    margin-bottom: 5%;
+}
+
+.bigmem{
+    width: 60%;
+    display: block;
+    margin: auto;
+    margin-bottom: 5%;
+}
+
+li{
+    font-size: large;
 }

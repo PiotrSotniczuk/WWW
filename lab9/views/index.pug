@@ -5,10 +5,11 @@ html
         include style.css
     body
         h1= message
-        img(src="http://www.mimuw.edu.pl/")
-        h1="Meme list"
+        img(src='https://i.pinimg.com/236x/64/e8/48/64e84853aaa2a974fc88b1a4c614a7f2.jpg' class='mem')
+        h1="Best 3 meme list"
         ul
             each meme in memes
                 li
                    a(href="meme/" + meme.id) #{meme.name}
-                   img(src=meme.url)
+                   span=" Price = " + meme.price
+                   img(src=meme.url class='mem')
