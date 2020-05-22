@@ -24,9 +24,14 @@ app.get('/', (req, res) => {
 export default app;
 
 app.get('/meme/:memeId', (req, res) => {
-    const meme = store.getMemeById(req.params.memeId);
-    res.render('meme', { title: 'Mem', message: 'Price history:', mem: meme });
- });
+    try{
+        const meme = store.getMemeById(req.params.memeId);
+        res.render('meme', { title: 'Mem', message: 'Price history:', mem: meme });
+    } catch(error){
+        res.status(404);
+        res.render('404');
+    }
+});
 
  app.use(express.urlencoded({
     extended: true
@@ -34,10 +39,14 @@ app.get('/meme/:memeId', (req, res) => {
 
  app.post('/meme/:memeId', (req, res) => {
     const newPrice = req.body.newPrice;
-    console.log(newPrice);
-    const meme = store.getMemeById(req.params.memeId);
-    meme.changePrice(newPrice);
-    res.render('meme', { title: 'Mem', message: 'Price history:', mem: meme });
+    try{
+        const meme = store.getMemeById(req.params.memeId);
+        meme.changePrice(newPrice);
+        res.render('meme', { title: 'Mem', message: 'Price history:', mem: meme });
+    } catch(error){
+        res.status(404);
+        res.render('404');
+    }
  });
 
 app.use((req, res) => {

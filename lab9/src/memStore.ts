@@ -1,6 +1,14 @@
 import { MemClass } from "./mem";
 
+class NoSuchMemError extends Error {
+    constructor(message : string) {
+      super(message); // (1)
+      this.name = "NoSuchMemError"; // (2)
+    }
+  }
+
 // klasa memStore
+// tslint:disable-next-line: max-classes-per-file
 export class MemStore {
     memesArr : MemClass[];
 
@@ -25,6 +33,6 @@ export class MemStore {
                return iterator;
            }
        }
-       return null;
+       throw new NoSuchMemError("no id=" + idStr);
     }
 }
