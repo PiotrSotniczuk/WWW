@@ -1,33 +1,30 @@
 import { MemClass } from "./mem";
 import { MemStore } from "./memStore";
+import 'mocha';
+import { assert } from "chai";
 
-function assert(condition : boolean, message : string) {
-    if (!condition) {
-        message = message || "Assertion failed";
-        if (typeof Error !== "undefined") {
-            throw new Error(message);
-        }
-        throw message; // Fallback
-    }
-}
-
-function testMemClass(){
+describe("MemClass", () => {
     const mem = new MemClass(1, 'Testowy', 1000, 'urlTEST');
-    assert(mem.id === 1 && mem.name === 'Testowy' &&
-    mem.price === 1000 && mem.url === 'urlTEST', 'Constructor');
+    it("checks constructor", () => {
+        const mem = new MemClass(1, 'Testowy', 1000, 'urlTEST');
+        assert.equal(mem.id, 1);
+        assert.equal(mem.name,'Testowy');
+        assert.equal(mem.price, 1000);
+        assert.equal(mem.url, 'urlTEST');
+    });
 
-    mem.changePrice(300);
-    assert(mem.price === 300, 'Change');
-    mem.changePrice(200);
+    it("changing price and price history", () => {
+        mem.changePrice(300);
+        assert.equal(mem.price, 300);
+        mem.changePrice(200);
 
-    assert(mem.priceHist[0] === 200 &&
-        mem.priceHist[1] === 300 && mem.priceHist[2] === 1000, 'History');
+        assert.equal(mem.priceHist[0], 200);
+        assert.equal(mem.priceHist[1], 300);
+        assert.equal(mem.priceHist[2], 1000);
+        });
+});
 
-    // tslint:disable-next-line: no-console
-    console.log('testMemClass passed');
-}
-
-function testMemStore(){
+describe("MemStore", () => {
     const store = new MemStore();
     const a = new MemClass(10, 'Gold', 100, 'https://i.redd.it/h7rplf9jt8y21.png');
     const b = new MemClass(9, 'Platinium', 1100,
@@ -38,35 +35,36 @@ function testMemStore(){
     store.addMeme(b);
     store.addMeme(c);
     store.addMeme(d);
-
     const allStore = store.allMemes;
-    assert(allStore.length === 4, 'allStore Size');
-    assert(allStore.includes(a), 'addMeme');
-    assert(allStore.includes(b), 'addMeme');
-    assert(allStore.includes(c), 'addMeme');
-    assert(allStore.includes(d), 'addMeme');
 
-    let mostExp = store.mostExpensive;
-    assert(mostExp.length === 3, 'mostExp Size');
+    it("adding memes to store", () => {
+        assert.equal(allStore.length, 4);
+        assert.equal(allStore.includes(a), true);
+        assert.equal(allStore.includes(b), true);
+        assert.equal(allStore.includes(c), true);
+        assert.equal(allStore.includes(d), true);
+    });
 
-    assert(mostExp[0].name === 'Platinium' && mostExp[1].name === 'Sad' &&
-    mostExp[2].name === 'Elite', 'sorting');
+    it("sorting most expensive", () => {
+        let mostExp = store.mostExpensive;
+        assert.equal(mostExp.length, 3);
+        assert.equal(mostExp[0].name, 'Platinium');
+        assert.equal(mostExp[1].name, 'Sad');
+        assert.equal(mostExp[2].name, 'Elite');
 
-    b.changePrice(110);
-    mostExp = store.mostExpensive;
-    assert(mostExp[2].name === 'Platinium' && mostExp[0].name === 'Sad' &&
-    mostExp[1].name === 'Elite', 'sorting after add');
+        b.changePrice(110);
+        mostExp = store.mostExpensive;
+        assert.equal(mostExp[2].name, 'Platinium');
+        assert.equal(mostExp[0].name, 'Sad');
+        assert.equal(mostExp[1].name, 'Elite');
+    });
 
-    assert(store.getMemeById('10') === a, 'getMemeById');
-
-    try {
-        store.getMemeById('1');
-    } catch (error) {
-        assert(error.name === 'NoSuchMemError', 'Bad Error');
-    }
-    // tslint:disable-next-line: no-console
-    console.log('testMemStore passed');
-}
-
-testMemClass();
-testMemStore();
+    it("checking getMemeById", () => {
+        assert.equal(store.getMemeById('10'), a);
+        try {
+            store.getMemeById('1');
+        } catch (error) {
+            assert.equal(error.name, 'NoSuchMemError');
+        }
+    });
+});
