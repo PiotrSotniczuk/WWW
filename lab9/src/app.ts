@@ -52,6 +52,9 @@ app.get('/meme/:memeId', (req, res) => {
 
  app.post('/meme/:memeId', (req, res) => {
     const newPrice = req.body.newPrice;
+    if(isNaN(newPrice)){
+        return;
+    }
     try{
         const meme = store.getMemeById(req.params.memeId);
         meme.changePrice(newPrice);
