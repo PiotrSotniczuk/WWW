@@ -1,4 +1,4 @@
-import sqlite from "sqlite3";
+import * as sqlite from 'sqlite3';
 
 sqlite.verbose();
 
@@ -49,9 +49,10 @@ async function createMemeTablesPricesIfNeeded(db: sqlite.Database): Promise<void
 
             console.log('Creating database tables prices...');
             db.run(`CREATE TABLE prices (
-              id INTEGER PRIMARY KEY,
+              id INTEGER,
               price INTEGER NOT NULL,
               mem_id INTEGER,
+              PRIMARY KEY(mem_id, id),
               FOREIGN KEY(mem_id) REFERENCES memes(id));`, [], (err1: any) => {
                 if (err1) {
                     reject('DB Error');
