@@ -1,7 +1,9 @@
 import express from 'express'
+import cookieParser from "cookie-parser";
 import { MemClass } from './mem';
 import { METHODS } from 'http';
 import { MemStore } from './memStore';
+import csurf from "csurf";
 
 
 
@@ -18,8 +20,12 @@ store.addMeme(new MemClass(6, 'Sad', 999,
 'https://i.pinimg.com/236x/6d/ee/bc/6deebc8a47ecfaf39cc8a8574a77599f.jpg'));
 
 const app = express();
-app.set('view engine', 'pug');
 
+const csrfProtection = csurf({cookie: true});
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
+
+app.set('view engine', 'pug');
 
 // tslint:disable-next-line: only-arrow-functions
 app.get('/', (req, res) => {
@@ -32,13 +38,14 @@ app.get('/', (req, res) => {
 
 export default app;
 
-app.get('/meme/:memeId', (req, res) => {
+app.get('/meme/:memeId(\\d+)', csrfProtection, (req, res, next) => {
     try{
         const meme = store.getMemeById(req.params.memeId);
         res.render('meme', {
             title: 'Mem',
             message: 'Price history:',
-            mem: meme
+            mem: meme,
+            csrfToken: req.csrfToken()
         });
     } catch(error){
         res.status(404);
@@ -46,11 +53,7 @@ app.get('/meme/:memeId', (req, res) => {
     }
 });
 
- app.use(express.urlencoded({
-    extended: true
-    }));
-
- app.post('/meme/:memeId', (req, res) => {
+ app.post('/meme/:memeId(\\d+)', csrfProtection, (req, res) => {
     const newPrice = req.body.newPrice;
     if(isNaN(newPrice)){
         return;
@@ -61,7 +64,8 @@ app.get('/meme/:memeId', (req, res) => {
         res.render('meme', {
             title: 'Mem',
             message: 'Price history:',
-            mem: meme
+            mem: meme,
+            csrfToken: req.csrfToken()
         });
     } catch(error){
         res.status(404);
