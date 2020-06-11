@@ -2,19 +2,15 @@
 export class MemClass {
     id : number;
     name : string;
-    price : number;
     url : string;
     priceHist : number[];
+    nickHist : string[];
 
-	constructor(id : number, name : string, price : number, url : string){
+	constructor(id : number, name : string, price : number[], url : string, nick : string[]){
         this.id = id;
         this.name = name;
-        this.price = price;
         this.url = url;
-        this.priceHist = [price];
-    }
-    changePrice(newPrice : number) : void{
-        this.price = newPrice;
-        this.priceHist.unshift(newPrice);
+        this.priceHist = price;
+        this.nickHist = nick;
     }
 }

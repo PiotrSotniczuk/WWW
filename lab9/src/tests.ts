@@ -3,27 +3,27 @@ import { MemStore } from "./memStore";
 import 'mocha';
 import { assert } from "chai";
 import * as sqlite from 'sqlite3';
-
-describe("MemClass", () => {
-    const mem = new MemClass(1, 'Testowy', 1000, 'urlTEST');
-    it("checks constructor", () => {
-        assert.equal(mem.id, 1);
-        assert.equal(mem.name,'Testowy');
-        assert.equal(mem.price, 1000);
-        assert.equal(mem.url, 'urlTEST');
-    });
-
-    it("changing price and price history", () => {
-        mem.changePrice(300);
-        assert.equal(mem.price, 300);
-        mem.changePrice(200);
-
-        assert.equal(mem.priceHist[0], 200);
-        assert.equal(mem.priceHist[1], 300);
-        assert.equal(mem.priceHist[2], 1000);
-        });
-});
-
+//
+//describe("MemClass", () => {
+//    const mem = new MemClass(1, 'Testowy', 1000, 'urlTEST');
+//    it("checks constructor", () => {
+//        assert.equal(mem.id, 1);
+//        assert.equal(mem.name,'Testowy');
+//        assert.equal(mem.price, 1000);
+//        assert.equal(mem.url, 'urlTEST');
+//    });
+//
+//    it("changing price and price history", () => {
+//        mem.changePrice(300);
+//        assert.equal(mem.price, 300);
+//        mem.changePrice(200);
+//
+//        assert.equal(mem.priceHist[0], 200);
+//        assert.equal(mem.priceHist[1], 300);
+//        assert.equal(mem.priceHist[2], 1000);
+//        });
+//});
+//
 //describe("MemStore", () => {
 //    const db = new sqlite.Database('memes.db');
 //    const store = new MemStore(db);

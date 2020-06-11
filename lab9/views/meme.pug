@@ -1,16 +1,21 @@
 html
     head
         title= title
-    style
-        include style.css
+        style
+            include style.css
     body
         h1= mem.name
         img(src=mem.url class='bigmem')
         h1= message
-        ul
-            each price in mem.priceHist
-                li
-                   span= price
+        span
+            - var n = 0;
+            ul
+                while n < size
+                    li
+                       span= mem.priceHist[n]
+                       span= "<--"
+                       span= mem.nickHist[n++]
+
 
         form(method="POST")
             div

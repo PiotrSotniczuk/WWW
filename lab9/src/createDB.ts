@@ -21,7 +21,7 @@ async function createMemeTableMemIfNeeded(db: sqlite.Database): Promise<void> {
               id INTEGER PRIMARY KEY,
               name TEXT,
               url TEXT,
-              last_id INTEGER);`, [], (err1: any) => {
+              last_nr INTEGER);`, [], (err1: any) => {
                 if (err1) {
                     reject('DB Error mem');
                     return;
@@ -49,10 +49,11 @@ async function createMemeTablesPricesIfNeeded(db: sqlite.Database): Promise<void
 
             console.log('Creating database tables prices...');
             db.run(`CREATE TABLE prices (
-              id INTEGER,
+              nr INTEGER,
               price INTEGER NOT NULL,
               mem_id INTEGER,
-              PRIMARY KEY(mem_id, id),
+              nick TEXT,
+              PRIMARY KEY(mem_id, nr),
               FOREIGN KEY(mem_id) REFERENCES memes(id));`, [], (err1: any) => {
                 if (err1) {
                     reject('DB Error');
@@ -70,5 +71,6 @@ createMemeTableMemIfNeeded(myDB).then(async () => {
     console.log("Mem table ended");
     createMemeTablesPricesIfNeeded(myDB).then(async () =>{
         console.log("Price table ended");
+        myDB.close();
     });
 });
