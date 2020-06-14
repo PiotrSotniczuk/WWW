@@ -23,7 +23,7 @@ export class MemStore {
                 `BEGIN TRANSACTION;
                 INSERT INTO memes (id, name, url, last_nr)
                 VALUES (${meme.id}, '${meme.name}', '${meme.url}', 1);
-                INSERT INTO prices (nr, price, mem_id, nick)
+                INSERT OR ROLLBACK INTO prices (nr, price, mem_id, nick)
                 VALUES (1, ${meme.priceHist[0]}, ${meme.id}, "init");
                 COMMIT;`,
                 (err) => {
@@ -102,7 +102,7 @@ export class MemStore {
             db.exec(`BEGIN TRANSACTION;
             INSERT INTO prices (nr, price, mem_id, nick)
             VALUES ((SELECT last_nr FROM memes WHERE id = ${idStr}) + 1, ${newPrice}, ${idStr}, '${nick}');
-            UPDATE memes SET last_nr = (SELECT last_nr FROM memes WHERE id = ${idStr}) + 1
+            UPDATE OR ROLLBACK memes SET last_nr = (SELECT last_nr FROM memes WHERE id = ${idStr}) + 1
             WHERE id = ${idStr};
             COMMIT;`, (err) => {
                 if(err) {

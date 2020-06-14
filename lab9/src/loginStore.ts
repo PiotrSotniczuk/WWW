@@ -39,7 +39,7 @@ export class LoginStore {
                         db.close();
                         return;
                     }
-                    if(sha256(row !== undefined && password) === row.password){
+                    if(row !== undefined && sha256(password) === row.password){
                         resolve(true);
                     }else{
                         resolve(false);
