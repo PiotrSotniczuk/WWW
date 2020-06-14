@@ -1,64 +1,43 @@
-import express from 'express'
-import cookieParser from "cookie-parser";
+import express = require('express')
+import cookieParser = require("cookie-parser");
 import { MemClass } from './mem';
 import { METHODS } from 'http';
 import { MemStore } from './memStore';
-import csurf from "csurf";
+import { LoginStore } from './loginStore';
+import csurf = require("csurf");
 import * as sqlite from 'sqlite3';
+import session = require('express-session');
 
+const connectSqlite = require('connect-sqlite3');
 
+const SqliteStore = connectSqlite(session);
 const store : MemStore = new MemStore('memes.db');
-
-store.addMeme(new MemClass(10, 'Gold', [100],
-'https://i.redd.it/h7rplf9jt8y21.png', [""])).then( () => {
-    console.log('addMeme Gold OK');
-}).catch(() => {
-    console.log('addMeme Gold in base');
-});
-
-store.addMeme(new MemClass(9, 'Platinium', [1100],
-'http://www.quickmeme.com/img/90/90d3d6f6d527a64001b79f4e13bc61912842d4a5876d17c1f011ee519d69b469.jpg', [""]))
-.then(() => {
-    console.log('addMeme Plat OK');
-}).catch(() => {
-    console.log('addMeme Plat in base');
-});
-
-store.addMeme(new MemClass(8, 'Elite', [120],
-'https://i.imgflip.com/30zz5g.jpg', [""])).then(() => {
-    console.log('addMeme Elite OK');
-}).catch(() => {
-    console.log('addMeme Elite in base');
-});
-
-store.addMeme(new MemClass(7, 'Bronze', [700],
-'http://www.gazetamiedzyszkolna.pl/wp-content/uploads/2016/02/macgyver-MEM-752x440.png', [""])).then(() => {
-    console.log('addMeme Bronze OK');
-}).catch(() => {
-    console.log('addMeme Bronze in base');
-});
-
-store.addMeme(new MemClass(6, 'Sad', [999],
-'https://i.pinimg.com/236x/6d/ee/bc/6deebc8a47ecfaf39cc8a8574a77599f.jpg', [""])).then(() => {
-    console.log('addMeme Sad OK');
-}).catch(() => {
-    console.log('addMeme Sad in base');
-});
-
+const loginStore : LoginStore = new LoginStore('memes.db');
 const app = express();
 
 const csrfProtection = csurf({cookie: true});
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
+export const secretStr = '219476719659883906827300102123948';
+
+app.use(cookieParser(secretStr));
 
 app.set('view engine', 'pug');
+
+app.use(session({
+    secret: secretStr,
+    cookie: { maxAge: 15*60*1000},
+    resave: false,
+    saveUninitialized: true,
+    store: new SqliteStore()
+}))
 
 app.get('/', (req, res) => {
     store.mostExpensive.then(result => {
         res.render('index', {
             title: 'Meme market',
             message: 'Hello there!',
-            memes: result
+            memes: result,
+            user: req.session.user
         });
     }).catch(() => {
         console.log("cannot load most exp");
@@ -88,25 +67,16 @@ app.get('/meme/:memeId(\\d+)', csrfProtection, (req, res, next) => {
 
 app.post('/meme/:memeId(\\d+)', csrfProtection, (req, res) => {
    const newPrice = req.body.newPrice;
-   if(isNaN(newPrice)){
-       return;
+   if(req.session.user === null || isNaN(newPrice)){
+        res.redirect('/');
+        return;
    }
    try{
         // check if such meme exist
         store.getMemeById(req.params.memeId).then(result => {
-            store.changePrice(req.params.memeId, newPrice, "ktos").then(() => {
+            store.changePrice(req.params.memeId, newPrice, req.session.user).then(() => {
                 // get new actulized meme
-                try{
-                    store.getMemeById(req.params.memeId).then(result2 => {
-                        res.render('meme', {
-                            title: 'Mem',
-                            message: 'Price history:',
-                            mem: result2,
-                            size: result2.priceHist.length,
-                            csrfToken: req.csrfToken()
-                        });
-                    }).catch(() => {console.log("getMemeId error");});
-                }catch(error){console.log("this should never happen exception above");}
+                res.redirect('/meme/' + req.params.memeId);
             }).catch(() => {console.log("changePrice error");})
         }).catch(() => {console.log("getMemeId error");});
    } catch(error){
@@ -114,6 +84,35 @@ app.post('/meme/:memeId(\\d+)', csrfProtection, (req, res) => {
        res.render('404');
    }
 });
+
+app.get('/login', csrfProtection, (req, res) => {
+    res.render('login', {
+        csrfToken: req.csrfToken()
+    });
+});
+
+app.post('/login', csrfProtection, (req, res) => {
+    const input_nick = req.body.nick;
+    const input_password = req.body.password;
+    loginStore.loginUser(input_nick, input_password).then(result => {
+        if(result){
+            console.log("zalogowany");
+            req.session.user = input_nick;
+            res.redirect('/');
+        }else{
+            console.log("bledny login");
+            res.redirect('/login');
+        }
+    }).catch(() => {
+        console.log("Error login");
+    });
+});
+
+app.get('/logout', (req, res) => {
+    req.session.user = null;
+    res.redirect('/');
+});
+
 app.use((req, res) => {
     res.status(404);
     res.render('404');

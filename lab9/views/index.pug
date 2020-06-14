@@ -4,6 +4,12 @@ html
         style
             include style.css
     body
+        unless user 
+            a(href="login") #{'ZALOGUJ'}
+        else
+            h3= user
+            a(href="logout") #{'WYLOGUJ'}
+        
         h1= message
         img(src='https://i.pinimg.com/236x/64/e8/48/64e84853aaa2a974fc88b1a4c614a7f2.jpg' class='mem')
         h1="Best 3 meme list"

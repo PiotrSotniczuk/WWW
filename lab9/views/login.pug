@@ -1,0 +1,18 @@
+html
+    head
+        title= 'LOGIN'
+    style
+        include style.css
+    body
+        h1="Login here"
+        form(method="POST")
+            div
+                input(type="hidden" name="_csrf" value=csrfToken)
+                div
+                    label(for='nick')="Your nick:"
+                    input(type='text', name='nick')
+                div
+                    label(for='password')="Your password:"
+                    input(type='text', name='password')
+            button(type="submit")="Login"
+       
