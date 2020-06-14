@@ -1,4 +1,6 @@
 import * as sqlite from 'sqlite3';
+const sha256 = require('sha256');
+
 export class LoginStore {
     baseName: string;
 
@@ -7,12 +9,11 @@ export class LoginStore {
     }
     addUser(nick : string, password : string) : Promise<void>{
         const db = new sqlite.Database(this.baseName);
+        const param = [sha256(nick), sha256(password)];
         return new Promise((resolve, reject) => {
-            db.exec(
-                `BEGIN TRANSACTION;
-                INSERT INTO users (nick, password)
-                VALUES ('${nick}', '${password}');
-                COMMIT;`, (err) => {
+            db.run(
+                `INSERT INTO users (nick, password)
+                VALUES ((?), (?));`, param, (err) => {
                     if(err) {
                         console.log(err.message);
                         reject(`DB Error probably this nick exist`);
@@ -27,17 +28,18 @@ export class LoginStore {
 
     loginUser(nick : string, password : string) : Promise<boolean>{
         const db = new sqlite.Database(this.baseName);
+        const param = [sha256(nick)];
         return new Promise((resolve, reject) => {
-            db.all(
-                `SELECT * FROM users WHERE nick='${nick}'
-                AND password='${password}';`, (err, row) => {
+            db.get(
+                `SELECT * FROM users WHERE nick=(?);`, param,
+                 (err, row) => {
                     if(err) {
                         console.log(err.message);
                         reject('DB Error check login');
                         db.close();
                         return;
                     }
-                    if(row.length === 1){
+                    if(sha256(row !== undefined && password) === row.password){
                         resolve(true);
                     }else{
                         resolve(false);

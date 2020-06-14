@@ -8,6 +8,7 @@ import csurf = require("csurf");
 import * as sqlite from 'sqlite3';
 import session = require('express-session');
 
+// tslint:disable-next-line: no-var-requires
 const connectSqlite = require('connect-sqlite3');
 
 const SqliteStore = connectSqlite(session);
@@ -67,17 +68,14 @@ app.get('/meme/:memeId(\\d+)', csrfProtection, (req, res, next) => {
 
 app.post('/meme/:memeId(\\d+)', csrfProtection, (req, res) => {
    const newPrice = req.body.newPrice;
-   if(req.session.user === null || isNaN(newPrice)){
+   if(req.session.user === null || req.session.user === undefined || isNaN(newPrice)){
         res.redirect('/');
         return;
    }
    try{
         // check if such meme exist
         store.getMemeById(req.params.memeId).then(result => {
-            store.changePrice(req.params.memeId, newPrice, req.session.user).then(() => {
-                // get new actulized meme
-                res.redirect('/meme/' + req.params.memeId);
-            }).catch(() => {console.log("changePrice error");})
+            changeLoop(req, res, newPrice);
         }).catch(() => {console.log("getMemeId error");});
    } catch(error){
        res.status(404);
@@ -92,12 +90,12 @@ app.get('/login', csrfProtection, (req, res) => {
 });
 
 app.post('/login', csrfProtection, (req, res) => {
-    const input_nick = req.body.nick;
-    const input_password = req.body.password;
-    loginStore.loginUser(input_nick, input_password).then(result => {
+    const inputNick = req.body.nick;
+    const inputPassword = req.body.password;
+    loginStore.loginUser(inputNick, inputPassword).then(result => {
         if(result){
             console.log("zalogowany");
-            req.session.user = input_nick;
+            req.session.user = inputNick;
             res.redirect('/');
         }else{
             console.log("bledny login");
@@ -117,3 +115,15 @@ app.use((req, res) => {
     res.status(404);
     res.render('404');
 })
+
+function changeLoop(req : any, res : any, newPrice : any) : void {
+    store.changePrice(req.params.memeId, newPrice, req.session.user).then(() => {
+        // get new actulized meme
+        res.redirect('/meme/' + req.params.memeId);
+    }).catch((message) => {
+        console.log(message);
+        if(message === 'SQLITE_BUSY: database is locked'){
+            changeLoop(req, res, newPrice);
+        }
+    })
+}

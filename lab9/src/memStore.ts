@@ -63,11 +63,12 @@ export class MemStore {
 
     getMemeById(idStr : string) : Promise<MemClass>{
         const db = new sqlite.Database(this.baseName);
+        const param = [idStr];
         return new Promise((resolve, reject) => {
             db.all(`SELECT * FROM memes m
             INNER JOIN prices p
-            ON m.id = ${idStr} AND m.id = p.mem_id
-            ORDER BY p.nr DESC;`, (err, rows) => {
+            ON m.id = (?) AND m.id = p.mem_id
+            ORDER BY p.nr DESC;`, param, (err, rows) => {
                 if(err) {
                     console.log(err.message);
                     reject('DB Error getById');
