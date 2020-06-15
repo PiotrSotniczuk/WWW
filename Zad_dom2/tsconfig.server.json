@@ -6,8 +6,8 @@
         "target":"ES6",
         "noImplicitAny": true,
         "moduleResolution": "node",
+        "outDir": "./dist",
         "sourceMap": true,
-        "outDir": "dist",
         "baseUrl": ".",
         "paths": {
             "*": [
@@ -16,6 +16,9 @@
         }
     },
     "include": [
-        "./**/*"
-    ]
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "src/front"
+    ],
 }

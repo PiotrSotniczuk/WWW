@@ -12,6 +12,4 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(mainDir + '/static/quiz.html'));
 });
 
-
-
 export default app;

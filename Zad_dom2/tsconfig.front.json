@@ -1,0 +1,17 @@
+{
+    "exclude": [
+        "src/server"
+    ],
+    "compilerOptions": {
+        "target": "es2016",
+        "removeComments": true,
+        "lib": ["es5", "DOM", "ES2015"],
+        "listFiles": false,
+        "outDir": "./static",
+        "watch": false
+      },
+      "include": [
+        "./src/**/*.ts"
+      ]
+
+}
