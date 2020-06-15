@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>QUIZ</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="main.css">
+</head>
+<body>
+	<article id="quiz" class="tlo quizGrid">
+		<div id="wstep">
+			<div id="powitanie">Liczyć każdy może!!!</div>
+			<div id="poSkonczeniu">
+				<div id="wynikText"></div>
+				<div id="zapis">
+					<input type="button" value="Zapisz sam wynik" id="bezZap">
+					<input type="button" value="Zapisz wynik + Statystyki" id="zZap">
+				</div>
+			</div>
+		</div>
+		<div id="stan">
+			<div id="nrPytania"></div>
+			<div id="czas">Czas: 0sek</div>
+			<div id="kara"></div>
+		</div>
+		<div id="pytanie"></div>
+		<div id="wejscie">
+			<input type="number" id="odpowiedz" required>
+			<span id="zlyFormat"></span>
+		</div>
+		<input type="button" value="Dalej" id="dalej" class="mniejsze">
+		<input type="button" value="Wstecz" id="wstecz" class="mniejsze">
+		<input type="submit" value="Skończ" id="skoncz" class="mniejsze" disabled>
+		<input type="submit" value="Anuluj" id="anuluj" class="mniejsze">
+	</article>
+
+	<article class="startGrid tlo" id="startowy">
+		<header>
+			Witaj, może zrobisz jakiś quiz??
+		</header>
+		<main>
+			<form>
+				<input type="text" id="nick" value="Twój-nick">
+				<input type="button" value="Start">
+			</form>
+
+			<br>
+			<br>
+			Najlepsi z najlepszych:
+			<ul id="ranking"></ul>
+		</main>
+	</article>
+
+	<footer>
+		Autor: Piotr Sotniczuk
+	</footer>
+</body>
+<script type="module" src="main.js"></script>
+</html>

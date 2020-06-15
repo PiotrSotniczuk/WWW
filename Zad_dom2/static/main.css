@@ -1,0 +1,187 @@
+/* ogólne */
+.tlo{
+    background-color: antiquewhite;
+    width: 80%;
+}
+
+html{
+    max-width: 1300px;
+}
+
+body{
+    /* https://uwalls.pl/gallery/187/10988_thumb_b600.jpg */
+    background-image: url("tapeta.jpg");
+    text-align: center;
+}
+
+footer{
+    background-color: aquamarine;
+    color: blue;
+    font-family: sans-serif;
+    font-size: xx-small;
+}
+
+/* uzywane do strony startowej */
+header{
+    grid-area: header;
+    font-size: x-large;
+}
+
+main{
+    grid-area: main;
+}
+
+.startGrid{
+    display: grid;
+    grid-row-gap: 15px;
+    margin: auto;
+    grid-template-areas:
+            "header"
+            "main";
+}
+
+/* uzywane do strony Quizu*/
+.mniejsze{
+    width: 30%;
+    margin: auto;
+}
+
+#quiz{
+    display: none;
+}
+
+#poSkonczeniu{
+    display: none;
+}
+
+#odpowiedz{
+    width: 20%;
+    margin-left: 20px;
+}
+
+#powitanie{
+    font-size: x-large;
+}
+
+/* nazwy gridów */
+#wstep{
+    grid-area: wstep;
+}
+
+#stan{
+    grid-area: stan;
+}
+
+#pytanie{
+    grid-area: pytanie;
+}
+
+#wejscie{
+    grid-area: wejscie;
+}
+
+#wstecz{
+    grid-area: wstecz;
+}
+
+#dalej{
+    grid-area: dalej;
+}
+
+#anuluj{
+    grid-area: anuluj;
+}
+#skoncz {
+    grid-area: skoncz;
+}
+/* gridy w zaleznosci od rozmiaru */
+@media screen and (max-width: 640px){
+
+
+    .quizGrid{
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+        grid-template-areas:
+                "wstep"
+                "stan"
+                "pytanie"
+                "wejscie"
+                "dalej"
+                "wstecz"
+                "skoncz"
+                "anuluj";
+    }
+
+    #pytanie{
+        text-align: center;
+    }
+    #wejscie{
+        text-align: center;
+    }
+    #ranking{
+        margin-left: 5%;
+        text-align: left;
+    }
+}
+
+@media screen and (min-width: 640px){
+
+
+    .quizGrid{
+        display: grid;
+        grid-row-gap: 30px;
+        margin: auto;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+                "wstep stan"
+                "pytanie wejscie"
+                "wstecz dalej"
+                "anuluj skoncz";
+    }
+
+    #pytanie{
+        text-align: right;
+    }
+    #wejscie{
+        text-align: left;
+    }
+    #ranking{
+        text-align: left;
+        margin-left: 40%;
+    }
+}
+
+/* wyswietlanie czy wprowadzona odpowiedz jest numerem */
+
+/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number */
+
+input:invalid+span:after {
+    content: '✖';
+    padding-left: 5px;
+}
+input:valid+span:after {
+    content: '✓';
+    padding-left: 5px;
+}
+
+/* klasy użyteczne do popupu */
+
+.block{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    padding-top: 25%;
+    font-size: x-large;
+    font-weight: 900;
+    background-color: rgba(255, 102, 0, 0.747);
+}
+
+.block_text{
+    background-color: white;
+    width: 50%;
+    margin: auto;
+}
