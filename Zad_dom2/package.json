@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/express": "^4.17.6",
     "express": "^4.17.1",
+    "sha256": "^0.2.0",
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {
