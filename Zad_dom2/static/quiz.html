@@ -8,6 +8,17 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="main.css">
 </head>
 <body>
+	<header id="logowanie">
+		<form method="POST" action="/login">
+			<input id="csrf" type="hidden" name="_csrf" value="">
+			Login:<input type="text" name="nick">
+			<br>
+			Password:<input type="password" name="password">
+			<br>
+			<input type="submit" value="Login">
+		</form>
+	</header>
+
 	<article id="quiz" class="tlo quizGrid">
 		<div id="wstep">
 			<div id="powitanie">Liczyć każdy może!!!</div>
@@ -36,7 +47,7 @@
 	</article>
 
 	<article class="startGrid tlo" id="startowy">
-		<header>
+		<header id="witaj">
 			Witaj, może zrobisz jakiś quiz??
 		</header>
 		<main>
