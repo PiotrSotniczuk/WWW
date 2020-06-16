@@ -1,5 +1,6 @@
 import * as sqlite from 'sqlite3';
 import { LoginStore } from './loginStore';
+import { Question, QuizStore} from './quizStore';
 
 sqlite.verbose();
 
@@ -19,8 +20,8 @@ async function createQuizesIfNeeded(db: sqlite.Database): Promise<void> {
 
             console.log('Creating database tables quizes...');
             db.run(`CREATE TABLE quizes (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT);`, [], (err1: any) => {
+              id INTEGER PRIMARY KEY,
+              name TEXT UNIQ);`, [], (err1: any) => {
                 if (err1) {
                     reject('DB Error quiz');
                     return;
@@ -49,6 +50,7 @@ async function createQuestionsIfNeeded(db: sqlite.Database): Promise<void> {
             console.log('Creating database tables questions...');
             db.run(`CREATE TABLE questions (
               nr INTEGER NOT NULL,
+              content TEXT NOT NULL,
               punish INTEGER NOT NULL,
               answer INTEGER NOT NULL,
               quiz_id INTEGER NOT NULL,
@@ -113,6 +115,7 @@ async function createDoneIfNeeded(db: sqlite.Database): Promise<void> {
               user_nick TEXT,
               quiz_id INTEGER,
               start INTEGER,
+              ended INTEGER,
               FOREIGN KEY(quiz_id) REFERENCES quizes(id),
 			  FOREIGN KEY(user_nick) REFERENCES users(nick),
 			  PRIMARY KEY(quiz_id, user_nick));`, [], (err1: any) => {
@@ -191,7 +194,37 @@ createQuizesIfNeeded(myDB).then(async () => {
             		    console.log('add user1 OK');
             		}).catch(() => {
             		    console.log('add user2 in base');
-					});
+                    });
+                    
+                    const quizStore : QuizStore = new QuizStore('quizes.db');
+
+                    quizStore.addQuiz('poczatkowy', 1).then(() => {
+            		    console.log('add quiz OK');
+            		}).catch(() => {
+            		    console.log('add quiz in base');
+                    });
+                    for(let i=1; i<6; i++){
+                        quizStore.addQuestion(1, new Question(i, "3 + " + i.toString(10), 10, 3+i)).then(() => {
+            		        console.log('add quest OK');
+            		    }).catch(() => {
+            		        console.log('add quest in base');
+                        });
+                    }
+
+                    quizStore.addQuiz('drugi', 2).then(() => {
+            		    console.log('add quiz OK');
+            		}).catch(() => {
+            		    console.log('add quiz in base');
+                    });
+                    for(let i=1; i<5; i++){
+                        quizStore.addQuestion(2, new Question(i, "5 + 3 * " + i.toString(10), 5, 5+3*i)).then(() => {
+            		        console.log('add quest OK');
+            		    }).catch(() => {
+            		        console.log('add quest in base');
+                        });
+                    }
+
+
 				}).catch(() => {console.log("error results")});
 			}).catch(() => {console.log("error done")});	
         }).catch(() => {console.log("error user")});
