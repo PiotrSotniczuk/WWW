@@ -1,5 +1,11 @@
 import {odnowGlob} from "./main.js";
 
+export async function getJSON(url = '') {
+	// Default options are marked with *
+	const response = await fetch(url, {method: 'GET'});
+	return response.json(); // parses JSON response into native JavaScript objects
+}
+
 function otworzBaze() {
 	if (!indexedDB) {
 		console.log("ERROR: nie dziala indexedDB");
@@ -71,4 +77,12 @@ export function wyswietlRanking() : void {
 			}
 		};
 	}
+	getJSON('/quizList').then(result => {
+		const elQuizy = document.getElementById("quizy");
+		elQuizy.innerHTML = "";
+		for(let i=0; i<result.length; i++){
+			elQuizy.innerHTML += "<li><a href='/quiz/" + 
+			result[i].id +"'>" + result[i].name + "</a></li>"
+		}
+	}).catch(() => {console.log('error getting list');});
 }

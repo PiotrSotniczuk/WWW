@@ -1,4 +1,5 @@
 import {IQuiz} from "./main.js";
+import { wyswietlRanking } from "./modulDB.js";
 
 // dodaj przycisk do rodzica
 export function dodajSubmit(father : HTMLElement, value : string) : HTMLInputElement {
@@ -109,7 +110,7 @@ export function getCookie(cname) : string {
 	return "";
   }
 
-export function handleHeaderAndCsrf(){
+export function loadSiteAndCsrf(){
 	const username : string = getCookie('USER_LOGGED');
 	const elLogin = document.getElementById("logowanie");
 	const elCsrf = document.getElementById("csrf");
@@ -122,6 +123,7 @@ export function handleHeaderAndCsrf(){
 			'Nowe Hasło:<input type="password" name="newPass"><br>'+
 			'<input type="submit" value="Zmień">'+
 		'</form>';
+		wyswietlRanking();
 	}else{
 		elLogin.innerHTML = '<form method="POST" action="/login">'+
 			'<input id="csrf" type="hidden" name="_csrf" value="'+ csrfCookie +'">'+

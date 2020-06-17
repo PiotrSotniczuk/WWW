@@ -1,6 +1,6 @@
 import {zapiszWynik, wyswietlRanking} from "./modulDB.js";
 import {dodajSubmit, inicjujTablice, policzWynik, TimerClass, 
-	wypelnijStrone, wstawZapis, getCookie, handleHeaderAndCsrf} from "./modulWork.js";
+	wypelnijStrone, wstawZapis, loadSiteAndCsrf} from "./modulWork.js";
 
 // typy i interfejsy
 type Pyt = string;
@@ -40,8 +40,7 @@ let trybSpr : boolean = false;
 let wynik : number = 0;
 let nick : string = "";
 
-handleHeaderAndCsrf();
-wyswietlRanking();
+loadSiteAndCsrf();
 
 // reinicjalizacja zmiennych
 export function odnowGlob(){

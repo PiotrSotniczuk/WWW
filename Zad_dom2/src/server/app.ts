@@ -2,6 +2,7 @@ import express = require('express')
 import cookieParser = require("cookie-parser");
 import path = require('path');
 import { LoginStore } from './loginStore';
+import { Question, QuizStore} from './quizStore';
 const connectSqlite = require('connect-sqlite3');
 import session = require('express-session');
 import csurf = require("csurf");
@@ -15,6 +16,7 @@ app.set('view engine', 'html');
 app.use(express.static(__dirname + '/../static'));
 
 const loginStore : LoginStore = new LoginStore('quizes.db');
+const quizStore : QuizStore = new QuizStore('quizes.db');
 
 export const secretStr = '21947htds48';
 app.use(cookieParser(secretStr));
@@ -74,6 +76,17 @@ app.post('/changePass', csrfProtection, (req, res) => {
         res.redirect('/');
     }).catch(() => {console.log('error changing pass');});
 });
+
+app.get('/quizList', (req, res) => {
+    if(req.session.user === null || req.session.user === undefined || 
+        req.session.user === ""){
+        res.redirect('/');
+        return;
+    }
+    quizStore.getQuizList(req.session.user).then(result => {
+        res.send(result);
+    }).catch(() => {console.log('error getting list');});
+})
 
 app.use((req, res) => {
     res.status(404);

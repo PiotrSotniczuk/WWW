@@ -145,7 +145,7 @@ async function createResultsIfNeeded(db: sqlite.Database): Promise<void> {
             }
 
             console.log('Creating database results...');
-            db.run(`CREATE TABLE resultss (
+            db.run(`CREATE TABLE results (
               user_nick TEXT,
               quiz_id INTEGER,
               quest_nr INTEGER,
@@ -204,7 +204,8 @@ createQuizesIfNeeded(myDB).then(async () => {
             		    console.log('add quiz in base');
                     });
                     for(let i=1; i<6; i++){
-                        quizStore.addQuestion(1, new Question(i, "3 + " + i.toString(10), 10, 3+i)).then(() => {
+                        quizStore.addQuestion(1, {nr:i, content:"3 + " + i.toString(10),
+                        punish: 10,answer: 3+i}).then(() => {
             		        console.log('add quest OK');
             		    }).catch(() => {
             		        console.log('add quest in base');
@@ -217,7 +218,8 @@ createQuizesIfNeeded(myDB).then(async () => {
             		    console.log('add quiz in base');
                     });
                     for(let i=1; i<5; i++){
-                        quizStore.addQuestion(2, new Question(i, "5 + 3 * " + i.toString(10), 5, 5+3*i)).then(() => {
+                        quizStore.addQuestion(2, {nr:i, content:"5 + 3 * " + i.toString(10),
+                        punish: 5, answer: 5+3*i}).then(() => {
             		        console.log('add quest OK');
             		    }).catch(() => {
             		        console.log('add quest in base');
