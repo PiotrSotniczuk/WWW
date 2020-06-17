@@ -16,7 +16,7 @@ app.use(express.static(__dirname + '/../static'));
 
 const loginStore : LoginStore = new LoginStore('quizes.db');
 
-export const secretStr = '219476719659883906827300102123948';
+export const secretStr = '21947htds48';
 app.use(cookieParser(secretStr));
 app.use(session({
     secret: secretStr,
@@ -54,6 +54,25 @@ app.get('/logout', (req, res) => {
     req.session.user = null;
     res.cookie('USER_LOGGED', "");
     res.redirect('/');
+});
+
+app.post('/changePass', csrfProtection, (req, res) => {
+    const oldPass = req.body.oldPass;
+    const newPass = req.body.newPass;
+    if(req.session.user === null || req.session.user === undefined || 
+        req.session.user === ""){
+        res.redirect('/');
+    }
+    loginStore.changePassword(req.session.user, oldPass, newPass).then((result) => {
+        if(result){
+            console.log('pass changed');
+            req.session.user = null;
+            res.cookie('USER_LOGGED', "");
+        }else{
+            console.log('pass not change');
+        }
+        res.redirect('/');
+    }).catch(() => {console.log('error changing pass');});
 });
 
 app.use((req, res) => {

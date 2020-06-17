@@ -1,5 +1,6 @@
 import {zapiszWynik, wyswietlRanking} from "./modulDB.js";
-import {dodajSubmit, inicjujTablice, policzWynik, TimerClass, wypelnijStrone, wstawZapis, getCookie} from "./modulWork.js";
+import {dodajSubmit, inicjujTablice, policzWynik, TimerClass, 
+	wypelnijStrone, wstawZapis, getCookie, handleHeaderAndCsrf} from "./modulWork.js";
 
 // typy i interfejsy
 type Pyt = string;
@@ -26,8 +27,6 @@ const elQuiz = document.getElementById("quiz");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 const elPoSkonczeniu = document.getElementById("poSkonczeniu");
 const elNick = document.getElementById("nick") as HTMLInputElement;
-const elLogin = document.getElementById("logowanie");
-const elCsrf = document.getElementById("csrf");
 
 // zmienne globalne
 let Interwal;
@@ -41,16 +40,7 @@ let trybSpr : boolean = false;
 let wynik : number = 0;
 let nick : string = "";
 
-const username : string = getCookie('USER_LOGGED');
-if(username.length > 0){
-	elLogin.innerHTML = "";
-	let loguj = document.createElement('a');
-	loguj.setAttribute('href', '\\logout');
-	loguj.innerHTML = "WYLOGUJ " + username;
-	elLogin.appendChild(loguj); 
-}
-const csrfCookie : string = getCookie('CSRF');
-elCsrf.setAttribute('value', csrfCookie);
+handleHeaderAndCsrf();
 wyswietlRanking();
 
 // reinicjalizacja zmiennych

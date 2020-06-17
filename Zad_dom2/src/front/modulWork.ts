@@ -108,3 +108,26 @@ export function getCookie(cname) : string {
 	}
 	return "";
   }
+
+export function handleHeaderAndCsrf(){
+	const username : string = getCookie('USER_LOGGED');
+	const elLogin = document.getElementById("logowanie");
+	const elCsrf = document.getElementById("csrf");
+	const csrfCookie : string = getCookie('CSRF');
+	if(username.length > 0){
+		elLogin.innerHTML = "<a href='/logout'> WYLOGUJ </a>" + username +
+		'<form method="POST" action="/changePass">'+
+			'<input id="csrf" type="hidden" name="_csrf" value="'+ csrfCookie +'">'+
+			'Hasło:<input type="password" name="oldPass"><br>'+
+			'Nowe Hasło:<input type="password" name="newPass"><br>'+
+			'<input type="submit" value="Zmień">'+
+		'</form>';
+	}else{
+		elLogin.innerHTML = '<form method="POST" action="/login">'+
+			'<input id="csrf" type="hidden" name="_csrf" value="'+ csrfCookie +'">'+
+			'Login:<input type="text" name="nick"><br>'+
+			'Password:<input type="password" name="password"><br>'+
+			'<input type="submit" value="Login">'+
+		'</form>';
+	}
+  }
