@@ -12,7 +12,6 @@ const SqliteStore = connectSqlite(session);
 const csrfProtection = csurf({cookie: true});
 
 app.use(express.urlencoded({extended: true}));
-app.set('view engine', 'html');
 app.use(express.static(__dirname + '/../static'));
 
 const loginStore : LoginStore = new LoginStore('quizes.db');
@@ -86,6 +85,23 @@ app.get('/quizList', (req, res) => {
     quizStore.getQuizList(req.session.user).then(result => {
         res.send(result);
     }).catch(() => {console.log('error getting list');});
+})
+
+app.get('/quiz/:quizId(\\d+)', (req, res) => {
+    if(req.session.user === null || req.session.user === undefined || 
+        req.session.user === ""){
+        res.redirect('/');
+        return;
+    }
+    // quizId is a number because it has passed reggex
+    quizStore.getQuiz(req.session.user, parseInt(req.params.quizId)).then(result => {
+        res.send(result);
+    }).catch(() => {console.log('error getting list');});
+})
+
+app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
+    // TODO
+    
 })
 
 app.use((req, res) => {

@@ -1,24 +1,15 @@
-import {zapiszWynik, wyswietlRanking} from "./modulDB.js";
-import {dodajSubmit, inicjujTablice, policzWynik, TimerClass, 
+import {zapiszWynik, getJSON} from "./modulDB.js";
+import {dodajSubmit, inicjujTablice, TimerClass, 
 	wypelnijStrone, wstawZapis, loadSiteAndCsrf} from "./modulWork.js";
 
-// typy i interfejsy
-type Pyt = string;
-type Odp = number;
-type Kara = number;
-type IPytanie = [Pyt, Odp, Kara];
 
-export interface IQuiz {
-	zadania: IPytanie[];
+export interface Question{
+    content : string,
+    punish : number
 }
 
-// parsowanie danych do quizu
-const jsonString: string = `{
-    "zadania": [["2 + 3", 5, 5], ["2 -(-24:4)", 8, 20], ["2 * 9", 18, 10], ["4 + 8", 12, 10]]
-}`;
-
-const quizData : IQuiz = JSON.parse(jsonString);
-const quizSize : number = quizData.zadania.length;
+let questions : Question[];
+let quizSize : number;
 
 // elementy czesto używane nie chce ich za kazdym razem szukac
 const elSkoncz = document.getElementById("skoncz");
@@ -27,6 +18,7 @@ const elQuiz = document.getElementById("quiz");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 const elPoSkonczeniu = document.getElementById("poSkonczeniu");
 const elNick = document.getElementById("nick") as HTMLInputElement;
+const elQuizy = document.getElementById('quizy') as HTMLFormElement;
 
 // zmienne globalne
 let Interwal;
@@ -53,7 +45,7 @@ export function odnowGlob(){
 	nick = "";
 
 	// wyświetlenie strony startowej
-	wyswietlRanking();
+	// TODO wyswietlRanking();
 	elNick.value = "Twój-nick";
 	elStartowy.style.display = "block";
 	elQuiz.style.display = "none";
@@ -63,25 +55,29 @@ export function odnowGlob(){
 }
 
 // strona Quizu
-document.querySelector("input[value='Start']").addEventListener('click', () => {
-	elStartowy.style.display = "none";
-	elQuiz.style.display = "grid";
-	wypelnijStrone(aktPyt, Odpowiedzi, quizData, trybSpr);
-	// o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
-	Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
-	nick = elNick.value;
-});
+export function startujQuiz(quiz_id : number){
+	getJSON('/quiz/'+ quiz_id).then(result => {
+		console.log(result);
+		questions = result;
+		quizSize = questions.length;
+		elStartowy.style.display = "none";
+		elQuiz.style.display = "grid";
+		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+		// o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
+		Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
+	}).catch(() => {console.log('error getting questions');});
+};
 
 // nastepne pytanie
 document.getElementById("dalej").addEventListener('click', () => {
 	aktPyt++;
-	wypelnijStrone(aktPyt, Odpowiedzi, quizData, trybSpr);
+	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
 });
 
 // poprzednie pytanie
 document.getElementById("wstecz").addEventListener('click', () => {
 	aktPyt--;
-	wypelnijStrone(aktPyt, Odpowiedzi, quizData, trybSpr);
+	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
 });
 
 // anuluj Quiz
@@ -117,7 +113,7 @@ elSkoncz.addEventListener('click', () => {
 	clearInterval(Interwal);
 
 	// stworz popup i napisz w nim
-	wynik = policzWynik(timer.getSekundy(), Odpowiedzi, quizData);
+	// TODO wynik = policzWynik(timer.getSekundy(), Odpowiedzi, questions);
 	const popup = document.createElement('div');
 	popup.setAttribute('class', 'block');
 	document.querySelector('body').appendChild(popup);
@@ -132,7 +128,7 @@ elSkoncz.addEventListener('click', () => {
 		elSkoncz.setAttribute('disabled', 'yes');
 		trybSpr = true;
 		popup.remove();
-		wypelnijStrone(aktPyt, Odpowiedzi, quizData, trybSpr);
+		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
 		wstawZapis(wynik);
 	});
 });

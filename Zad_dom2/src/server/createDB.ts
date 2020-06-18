@@ -204,7 +204,7 @@ createQuizesIfNeeded(myDB).then(async () => {
             		    console.log('add quiz in base');
                     });
                     for(let i=1; i<6; i++){
-                        quizStore.addQuestion(1, {nr:i, content:"3 + " + i.toString(10),
+                        quizStore.addQuestion(1, i, {content:"3 + " + i.toString(10),
                         punish: 10,answer: 3+i}).then(() => {
             		        console.log('add quest OK');
             		    }).catch(() => {
@@ -218,7 +218,7 @@ createQuizesIfNeeded(myDB).then(async () => {
             		    console.log('add quiz in base');
                     });
                     for(let i=1; i<5; i++){
-                        quizStore.addQuestion(2, {nr:i, content:"5 + 3 * " + i.toString(10),
+                        quizStore.addQuestion(2, i, {content:"5 + 3 * " + i.toString(10),
                         punish: 5, answer: 5+3*i}).then(() => {
             		        console.log('add quest OK');
             		    }).catch(() => {

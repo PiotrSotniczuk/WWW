@@ -1,5 +1,5 @@
-import {IQuiz} from "./main.js";
-import { wyswietlRanking } from "./modulDB.js";
+import {Question} from "./main.js";
+import { wyswietlListe } from "./modulDB.js";
 
 // dodaj przycisk do rodzica
 export function dodajSubmit(father : HTMLElement, value : string) : HTMLInputElement {
@@ -14,17 +14,6 @@ export function inicjujTablice ( tablica, wartosc) {
 	for(let i=0; i<tablica.length; i++){
 		tablica[i] = wartosc;
 	}
-}
-
-export function policzWynik(sek : number, Odp : string[], quizData : IQuiz) : number {
-	let i;
-	let wynik = sek;
-	for( i = 0; i < Odp.length; i++){
-		if(Odp[i] !== quizData.zadania[i][1].toString()){
-			wynik += quizData.zadania[i][2];
-		}
-	}
-	return wynik;
 }
 
 // pokazuje wynik w lewym gornym rogu
@@ -54,27 +43,28 @@ export class TimerClass {
 
 // wypelnia strone aktualnym pytaniem
 export function wypelnijStrone(aktPyt : number,
-                               Odpowiedzi : string[], quizData : IQuiz, trybSpr : boolean) : void {
+                               Odpowiedzi : string[], questions : Question[], trybSpr : boolean) : void {
 	const elNrPytania = document.getElementById("nrPytania");
 	const elPytanie = document.getElementById("pytanie");
 	const elKara = document.getElementById("kara");
 	const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
-	const quizSize = Odpowiedzi.length;
+	const quizSize = questions.length;
 
 	// zmien stan(nr pytania, kare, czerwone tlo)
 	elNrPytania.innerHTML = "Nr. Pytania: " + (aktPyt+1).toString() + "/" + quizSize;
-	elKara.innerHTML = "Ew. kara: " + quizData.zadania[aktPyt][2];
-	if (trybSpr === true &&  Odpowiedzi[aktPyt] !== quizData.zadania[aktPyt][1].toString()){
-		elKara.style.backgroundColor = "red";
-	}else {
-		elKara.style.backgroundColor = "";
-	}
+	elKara.innerHTML = "Ew. kara: " + questions[aktPyt].punish;
+	// TODO
+	//if (trybSpr === true &&  Odpowiedzi[aktPyt] !== quizData.zadania[aktPyt][1].toString()){
+	//	elKara.style.backgroundColor = "red";
+	//}else {
+	//	elKara.style.backgroundColor = "";
+	//}
 
 	// zmien pytanie
-	elPytanie.innerHTML = quizData.zadania[aktPyt][0] + " = ";
-	if (trybSpr === true){
-		elPytanie.innerHTML += quizData.zadania[aktPyt][1];
-	}
+	elPytanie.innerHTML = questions[aktPyt].content + " = ";
+	//if (trybSpr === true){
+	//	elPytanie.innerHTML += quizData.zadania[aktPyt][1];
+	//}
 
 	// wpisz jesli juz na to odpowiedzial
 	elOdpowiedz.value = Odpowiedzi[aktPyt];
@@ -115,7 +105,9 @@ export function loadSiteAndCsrf(){
 	const elLogin = document.getElementById("logowanie");
 	const elCsrf = document.getElementById("csrf");
 	const csrfCookie : string = getCookie('CSRF');
+	document.getElementById("quiz").style.display = "none";
 	if(username.length > 0){
+		document.getElementById("startowy").style.display = "block";
 		elLogin.innerHTML = "<a href='/logout'> WYLOGUJ </a>" + username +
 		'<form method="POST" action="/changePass">'+
 			'<input id="csrf" type="hidden" name="_csrf" value="'+ csrfCookie +'">'+
@@ -123,8 +115,9 @@ export function loadSiteAndCsrf(){
 			'Nowe Hasło:<input type="password" name="newPass"><br>'+
 			'<input type="submit" value="Zmień">'+
 		'</form>';
-		wyswietlRanking();
+		wyswietlListe();
 	}else{
+		document.getElementById("startowy").style.display = "none";
 		elLogin.innerHTML = '<form method="POST" action="/login">'+
 			'<input id="csrf" type="hidden" name="_csrf" value="'+ csrfCookie +'">'+
 			'Login:<input type="text" name="nick"><br>'+
