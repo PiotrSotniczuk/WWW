@@ -6,6 +6,10 @@ import { Question, QuizStore} from './quizStore';
 const connectSqlite = require('connect-sqlite3');
 import session = require('express-session');
 import csurf = require("csurf");
+import bodyParser = require('body-parser');
+import { send } from 'process';
+import { stringify } from 'querystring';
+
 
 const app = express();
 const SqliteStore = connectSqlite(session);
@@ -19,6 +23,7 @@ const quizStore : QuizStore = new QuizStore('quizes.db');
 
 export const secretStr = '21947htds48';
 app.use(cookieParser(secretStr));
+app.use(bodyParser.json());
 app.use(session({
     secret: secretStr,
     cookie: { maxAge: 60*60*1000},
@@ -48,6 +53,7 @@ app.post('/login', csrfProtection, (req, res) => {
         res.redirect('/');
     }).catch(() => {
         console.log("Error login");
+        res.redirect('/');
     });
 });
 
@@ -62,6 +68,7 @@ app.post('/changePass', csrfProtection, (req, res) => {
     const newPass = req.body.newPass;
     if(req.session.user === null || req.session.user === undefined || 
         req.session.user === ""){
+        res.cookie('USER_LOGGED', "");
         res.redirect('/');
     }
     loginStore.changePassword(req.session.user, oldPass, newPass).then((result) => {
@@ -73,34 +80,58 @@ app.post('/changePass', csrfProtection, (req, res) => {
             console.log('pass not change');
         }
         res.redirect('/');
-    }).catch(() => {console.log('error changing pass');});
+    }).catch(() => {
+        console.log('error changing pass');
+        res.redirect('/');
+    });
 });
 
 app.get('/quizList', (req, res) => {
     if(req.session.user === null || req.session.user === undefined || 
         req.session.user === ""){
+        res.cookie('USER_LOGGED', "");
         res.redirect('/');
         return;
     }
     quizStore.getQuizList(req.session.user).then(result => {
         res.send(result);
-    }).catch(() => {console.log('error getting list');});
+    }).catch(() => {
+        res.redirect('/');
+        console.log('error getting list');
+    });
 })
 
 app.get('/quiz/:quizId(\\d+)', (req, res) => {
     if(req.session.user === null || req.session.user === undefined || 
         req.session.user === ""){
+        res.cookie('USER_LOGGED', "");
         res.redirect('/');
         return;
     }
     // quizId is a number because it has passed reggex
     quizStore.getQuiz(req.session.user, parseInt(req.params.quizId)).then(result => {
         res.send(result);
-    }).catch(() => {console.log('error getting list');});
+    }).catch(() => {
+        console.log('error getting list');
+        res.redirect('/');
+    });
 })
 
 app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
-    // TODO
+    if(req.session.user === null || req.session.user === undefined || 
+        req.session.user === ""){
+        res.cookie('USER_LOGGED', "");
+        res.redirect('/');
+        return;
+    }
+    console.log(req.body);
+    quizStore.setResult(req.session.user, parseInt(req.params.quizId), req.body)
+    .then(() =>{
+        res.redirect('/');
+    }).catch(()=>{
+        console.log('error saving results');
+        res.redirect('/');
+    });
     
 })
 

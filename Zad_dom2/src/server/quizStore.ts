@@ -103,7 +103,8 @@ export class QuizStore {
         const db = new sqlite.Database(this.baseName);
         return new Promise((resolve,reject) => {
             db.get(`SELECT * FROM quizes q LEFT JOIN done d
-            ON d.user_nick = (?) AND d.quiz_id = q.id;`, [nick], (err, row) => {
+            ON d.user_nick = (?) AND d.quiz_id = q.id
+            AND q.id=(?);`, [nick, quiz_id.toString(10)], (err, row) => {
                 if(err) {
                     console.log(err.message);
                     reject('DB Error getQuiz');
@@ -148,7 +149,36 @@ export class QuizStore {
             });
         });
     }
-    //setResults()
+    
+    setResult(nick : string, quiz_id : number, answers : any){
+        const db = new sqlite.Database(this.baseName);
+        return new Promise((resolve, reject) => {
+            db.get(`SELECT * FROM quizes q LEFT JOIN done d
+            ON d.user_nick = (?) AND d.quiz_id = q.id
+            AND q.id = (?);`, [nick, quiz_id.toString(10)], (err, row) => {
+                if(err) {
+                    console.log(err.message);
+                    reject('DB Error getQuiz');
+                    db.close;
+                    return;
+                }
+                console.log(row);
+                if(row.start === null || row.start === undefined){
+                    console.log("you havent started yet");
+                    reject();
+                    return;
+                }
+                if(row.ended !== null){
+                    console.log("cant do it twice");
+                    reject();
+                    return;
+                }
+                console.log('ok');
+                resolve();
+                return;
+            });
+        });
+    }
 }
 
 

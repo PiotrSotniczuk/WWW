@@ -1,6 +1,6 @@
 import {zapiszWynik, getJSON} from "./modulDB.js";
 import {dodajSubmit, inicjujTablice, TimerClass, 
-	wypelnijStrone, wstawZapis, loadSiteAndCsrf} from "./modulWork.js";
+	wypelnijStrone, wstawZapis, loadSiteAndCsrf, getCookie} from "./modulWork.js";
 
 
 export interface Question{
@@ -10,23 +10,21 @@ export interface Question{
 
 let questions : Question[];
 let quizSize : number;
+let act_quiz_id : number;
 
 // elementy czesto używane nie chce ich za kazdym razem szukac
-const elSkoncz = document.getElementById("skoncz");
 const elStartowy = document.getElementById("startowy");
 const elQuiz = document.getElementById("quiz");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 const elPoSkonczeniu = document.getElementById("poSkonczeniu");
 const elNick = document.getElementById("nick") as HTMLInputElement;
-const elQuizy = document.getElementById('quizy') as HTMLFormElement;
+const elWyslij = document.getElementById('wyslij') as HTMLFormElement;
 
 // zmienne globalne
 let Interwal;
 let aktPyt : number = 0;
-const Odpowiedzi : string[] = new Array(quizSize);
-const Statystyki : number[] = new Array(quizSize);
-inicjujTablice(Odpowiedzi, "");
-inicjujTablice(Statystyki, 0);
+let Odpowiedzi : string[];
+let Statystyki : number[];
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
 let wynik : number = 0;
@@ -49,7 +47,7 @@ export function odnowGlob(){
 	elNick.value = "Twój-nick";
 	elStartowy.style.display = "block";
 	elQuiz.style.display = "none";
-	elSkoncz.setAttribute('disabled', 'yes');
+	document.getElementById('skoncz').setAttribute('disabled', 'yes');
 	elOdpowiedz.removeAttribute('disabled');
 	elPoSkonczeniu.style.display = "none";
 }
@@ -60,6 +58,12 @@ export function startujQuiz(quiz_id : number){
 		console.log(result);
 		questions = result;
 		quizSize = questions.length;
+		Odpowiedzi = new Array(quizSize);
+		Statystyki = new Array(quizSize);
+		inicjujTablice(Odpowiedzi, "");
+		inicjujTablice(Statystyki, 0);
+		act_quiz_id = quiz_id;
+		elWyslij.setAttribute('action', '/quiz/' + quiz_id);
 		elStartowy.style.display = "none";
 		elQuiz.style.display = "grid";
 		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
@@ -91,11 +95,11 @@ elOdpowiedz.addEventListener('input', () => {
 	Odpowiedzi[aktPyt] = elOdpowiedz.value;
 	for (const odp of Odpowiedzi){
 		if(odp === undefined || odp === ""){
-			elSkoncz.setAttribute('disabled', 'yes');
+			document.getElementById('skoncz').setAttribute('disabled', 'yes');
 			return;
 		}
 	}
-	elSkoncz.removeAttribute('disabled');
+	document.getElementById('skoncz').removeAttribute('disabled');
 });
 
 // zapisz sam wynik
@@ -109,26 +113,44 @@ document.getElementById("zZap").addEventListener('click',() => {
 });
 
 // pokaz popup z wynikiem
-elSkoncz.addEventListener('click', () => {
+elWyslij.addEventListener('submit', (event) => {
 	clearInterval(Interwal);
 
 	// stworz popup i napisz w nim
 	// TODO wynik = policzWynik(timer.getSekundy(), Odpowiedzi, questions);
-	const popup = document.createElement('div');
-	popup.setAttribute('class', 'block');
-	document.querySelector('body').appendChild(popup);
-	const text = document.createElement('div');
-	text.setAttribute('class', 'block_text');
-	text.innerHTML = "Twój wynik to " + wynik + "pkt";
-	popup.appendChild(text);
-
-	dodajSubmit(popup, 'Zobacz Odpowiedzi').
-	addEventListener('click', () => {
-		elOdpowiedz.setAttribute('disabled', 'yes');
-		elSkoncz.setAttribute('disabled', 'yes');
-		trybSpr = true;
-		popup.remove();
-		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
-		wstawZapis(wynik);
+	let Stats_proc : number[] = [];
+	let sum = 0;
+	for(const stat of Statystyki){
+		sum += stat;
+	}
+	for(const stat of Statystyki){
+		Stats_proc.push(100*stat/sum); 
+	}
+	const answers = {ans : Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF'+ "heh")}
+	fetch('/quiz/' + act_quiz_id, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+			// 'Content-Type': 'application/x-www-form-urlencoded',
+		  },
+		body: JSON.stringify(answers)
 	});
+	
+	//const popup = document.createElement('div');
+	//popup.setAttribute('class', 'block');
+	//document.querySelector('body').appendChild(popup);
+	//const text = document.createElement('div');
+	//text.setAttribute('class', 'block_text');
+	//text.innerHTML = "Twój wynik to " + wynik + "pkt";
+	//popup.appendChild(text);
+//
+	//dodajSubmit(popup, 'Zobacz Odpowiedzi').
+	//addEventListener('click', () => {
+	//	elOdpowiedz.setAttribute('disabled', 'yes');
+	//	elSkoncz.setAttribute('disabled', 'yes');
+	//	trybSpr = true;
+	//	popup.remove();
+	//	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+	//	wstawZapis(wynik);
+	//});
 });
