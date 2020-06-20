@@ -25,11 +25,12 @@ let tables = {
 	Odpowiedzi : [],
 	Statystyki : [],
 	Poprawne : [],
-	Pytania : []
+	Pytania : [],
+	Najlepsi : []
 }
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
-let wynik : number = 0;
+let wynik : string = "";
 let nick : string = "";
 
 loadSiteAndCsrf();
@@ -83,7 +84,8 @@ export function przejrzyjQuiz(quiz_id : number){
 			tables.Odpowiedzi = result.user_ans;
 			tables.Statystyki = result.times;
 			tables.Poprawne = result.corr_ans;
-			wynik = Math.ceil(result.points);
+			tables.Najlepsi = result.best;
+			wynik = parseFloat(result.points).toFixed(2);
 			elStartowy.style.display = "none";
 			elQuiz.style.display = "grid";
 	

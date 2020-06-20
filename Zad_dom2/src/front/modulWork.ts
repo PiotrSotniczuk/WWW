@@ -17,7 +17,7 @@ export function inicjujTablice ( tablica : any[], length, wartosc) {
 }
 
 // pokazuje wynik w lewym gornym rogu
-export function wstawZapis(wynik : number) : void {
+export function wstawZapis(wynik : string) : void {
 	document.getElementById("poSkonczeniu").style.display = "block";
 	document.getElementById("wynikText").innerHTML = "Twój wynik to " + wynik;
 }
@@ -46,13 +46,20 @@ export function wypelnijStrone(aktPyt : number, tables : any, trybSpr : boolean)
 	const elNrPytania = document.getElementById("nrPytania");
 	const elPytanie = document.getElementById("pytanie");
 	const elKara = document.getElementById("kara");
+	const elStatTw = document.getElementById("statTwoje");
+	const elStatIn = document.getElementById("statInnych");
 	const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 	const quizSize = tables.Pytania.length;
 
 	// zmien stan(nr pytania, kare, czerwone tlo)
 	elNrPytania.innerHTML = "Nr. Pytania: " + (aktPyt+1).toString() + "/" + quizSize;
 	elKara.innerHTML = "Ew. kara: " + tables.Pytania[aktPyt].punish;
-	// TODO
+	elStatTw.innerHTML = "Spedziłeś tu: " + parseFloat(tables.Statystyki[aktPyt]).toFixed(2) + " s<br>";
+	elStatIn.innerHTML = "A najlepsi:<br>";
+	for(const stat of tables.Najlepsi){
+		elStatIn.innerHTML += "<li>" + stat.nick + ": " + parseFloat(stat.points).toFixed(2) + "</li>"
+	}
+
 	if (trybSpr === true &&  tables.Odpowiedzi[aktPyt] !== tables.Poprawne[aktPyt]){
 		elKara.style.backgroundColor = "red";
 	}else {

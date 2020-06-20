@@ -217,7 +217,8 @@ export class QuizStore {
     giveResult(nick : string, quiz_id : number) : Promise<any>{
         const db = new sqlite.Database(this.baseName);
         const Corr_Answers : number[]= [];
-        const User_Answers :number[]= [];
+		const User_Answers :number[]= [];
+		const Best : any[] = [];
         let sum = 0;
          const Times :number[]= [];
         return new Promise((resolve, reject) => {
@@ -232,7 +233,22 @@ export class QuizStore {
                         return;
                     }
                     sum = row.points;
-                 })
+				 })
+				 
+				db.all(`SELECT user_nick, points FROM done
+				WHERE quiz_id = (?)
+				ORDER BY points ASC;`,
+				  [quiz_id.toString(10)], (err, rows) => {
+					 if(err || rows===undefined) {
+						 console.log(err.message);
+						 reject('DB Error getQuiz');
+						 db.close;
+						 return;
+					 }
+					 for(const row of rows){
+                        Best.push({nick: row.user_nick, points: row.points});
+					}
+				});
 
                 db.all(`SELECT answer, user_answer, milis_spend, punish FROM questions q INNER JOIN results r 
                 ON q.nr=r.quest_nr AND q.quiz_id = r.quiz_id
@@ -250,9 +266,9 @@ export class QuizStore {
                         User_Answers.push(parseInt(row.user_answer));
                         Times.push(parseInt(row.milis_spend)/1000);
 					}
-					resolve({points : sum, corr_ans : Corr_Answers, user_ans : User_Answers, times : Times});
-            	db.close();
-            	return;
+					resolve({points : sum, corr_ans : Corr_Answers, user_ans : User_Answers, times : Times, best: Best});
+            		db.close();
+            		return;
                 });
 
 
