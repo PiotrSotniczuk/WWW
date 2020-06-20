@@ -9,6 +9,8 @@ import csurf = require("csurf");
 import bodyParser = require('body-parser');
 import { send } from 'process';
 import { stringify } from 'querystring';
+import * as sqlite from 'sqlite3';
+import { resolve } from 'path';
 
 
 const app = express();
@@ -74,12 +76,25 @@ app.post('/changePass', csrfProtection, (req, res) => {
     loginStore.changePassword(req.session.user, oldPass, newPass).then((result) => {
         if(result){
             console.log('pass changed');
-            req.session.user = null;
-            res.cookie('USER_LOGGED', "");
+            const db = new sqlite.Database('sessions');
+            new Promise((resolve, reject) => {
+                db.run(`DELETE FROM sessions WHERE sess LIKE '%"user":"' || ? || '"%';`,
+                [req.session.user], (err) => {
+                    if(err){
+                        console.log('removing sessions' + err.message);
+                        reject();
+                        db.close();
+                    }
+                    res.cookie('USER_LOGGED', "");
+                    res.redirect('/');
+                    resolve();
+                    db.close();
+                })
+            })
         }else{
             console.log('pass not change');
+            res.redirect('/');
         }
-        res.redirect('/');
     }).catch(() => {
         console.log('error changing pass');
         res.redirect('/');
@@ -125,9 +140,11 @@ app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
         return;
     }
     console.log(req.body);
+    console.log(req.params.quizId + 'to chce');
     quizStore.setResult(req.session.user, parseInt(req.params.quizId), req.body)
     .then(() =>{
-        res.redirect('/');
+        console.log('skonczone');
+        res.redirect('/');        
     }).catch(()=>{
         console.log('error saving results');
         res.redirect('/');

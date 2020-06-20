@@ -18,7 +18,6 @@ const elQuiz = document.getElementById("quiz");
 const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 const elPoSkonczeniu = document.getElementById("poSkonczeniu");
 const elNick = document.getElementById("nick") as HTMLInputElement;
-const elWyslij = document.getElementById('wyslij') as HTMLFormElement;
 
 // zmienne globalne
 let Interwal;
@@ -63,7 +62,6 @@ export function startujQuiz(quiz_id : number){
 		inicjujTablice(Odpowiedzi, "");
 		inicjujTablice(Statystyki, 0);
 		act_quiz_id = quiz_id;
-		elWyslij.setAttribute('action', '/quiz/' + quiz_id);
 		elStartowy.style.display = "none";
 		elQuiz.style.display = "grid";
 		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
@@ -113,11 +111,10 @@ document.getElementById("zZap").addEventListener('click',() => {
 });
 
 // pokaz popup z wynikiem
-elWyslij.addEventListener('submit', (event) => {
+document.getElementById('skoncz').addEventListener('click', () => {
 	clearInterval(Interwal);
 
 	// stworz popup i napisz w nim
-	// TODO wynik = policzWynik(timer.getSekundy(), Odpowiedzi, questions);
 	let Stats_proc : number[] = [];
 	let sum = 0;
 	for(const stat of Statystyki){
@@ -126,8 +123,8 @@ elWyslij.addEventListener('submit', (event) => {
 	for(const stat of Statystyki){
 		Stats_proc.push(100*stat/sum); 
 	}
-	const answers = {ans : Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF'+ "heh")}
-	fetch('/quiz/' + act_quiz_id, {
+	const answers = {ans : Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF')}
+	const response = fetch('/quiz/' + act_quiz_id, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -135,6 +132,15 @@ elWyslij.addEventListener('submit', (event) => {
 		  },
 		body: JSON.stringify(answers)
 	});
+
+	response.then(()=>{
+		location.reload();
+		console.log('wyslano');
+	}).catch(err => {
+		console.log(err);
+		location.reload();
+	})	
+	//elWyslij.innerHTML += '<input type="text" name="answers" value="' + JSON.stringify(answers) +'">'
 	
 	//const popup = document.createElement('div');
 	//popup.setAttribute('class', 'block');

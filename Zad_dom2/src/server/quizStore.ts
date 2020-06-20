@@ -104,7 +104,7 @@ export class QuizStore {
         return new Promise((resolve,reject) => {
             db.get(`SELECT * FROM quizes q LEFT JOIN done d
             ON d.user_nick = (?) AND d.quiz_id = q.id
-            AND q.id=(?);`, [nick, quiz_id.toString(10)], (err, row) => {
+            WHERE q.id=(?);`, [nick, quiz_id.toString(10)], (err, row) => {
                 if(err) {
                     console.log(err.message);
                     reject('DB Error getQuiz');
@@ -155,26 +155,42 @@ export class QuizStore {
         return new Promise((resolve, reject) => {
             db.get(`SELECT * FROM quizes q LEFT JOIN done d
             ON d.user_nick = (?) AND d.quiz_id = q.id
-            AND q.id = (?);`, [nick, quiz_id.toString(10)], (err, row) => {
+            WHERE q.id = (?);`, [nick, quiz_id.toString(10)], (err, row) => {
                 if(err) {
                     console.log(err.message);
                     reject('DB Error getQuiz');
                     db.close;
                     return;
-                }
+				}
                 console.log(row);
                 if(row.start === null || row.start === undefined){
                     console.log("you havent started yet");
-                    reject();
+					reject();
+					db.close;
                     return;
                 }
                 if(row.ended !== null){
                     console.log("cant do it twice");
-                    reject();
+					reject();
+					db.close;
                     return;
-                }
-                console.log('ok');
-                resolve();
+				}
+				
+                console.log("clock ended");
+                const now = new Date()  
+                const milis = now.getTime();
+				db.serialize(() => {
+					db.run('UPDATE done SET ended=(?) WHERE quiz_id=(?) AND user_nick=(?);',
+					[milis.toString(), quiz_id.toString(), nick], (err) => {if(err) console.log(err.message);});
+					for( let i=0; i<answers.ans.length; i++){
+						const spend = (milis - row.start)*answers.stats[i]/100;
+						db.run('INSERT INTO results VALUES((?), (?), (?), (?), (?));',
+						[nick, quiz_id.toString(), i.toString(), answers.ans[i].toString(), 
+						spend.toString()], (err) => {if(err) console.log(err.message);});
+					}
+				})
+				resolve();
+				db.close;
                 return;
             });
         });
