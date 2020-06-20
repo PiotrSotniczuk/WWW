@@ -6,12 +6,6 @@ export async function getJSON(url = '') {
 	return response.json(); // parses JSON response into native JavaScript objects
 }
 
-// zapisuje dane do bazy
-export function zapiszWynik(_punkty : number, _nick : string, _statystyki : number[],
-                            _odpowiedzi : string[]) : void {
-	
-}
-
 export function wyswietlListe() : void {
 	getJSON('/quizList').then(result => {
 		const elQuizy = document.getElementById("quizy");

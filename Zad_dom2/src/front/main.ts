@@ -1,4 +1,4 @@
-import {zapiszWynik, getJSON} from "./modulDB.js";
+import {getJSON} from "./modulDB.js";
 import {dodajSubmit, inicjujTablice, TimerClass, 
 	wypelnijStrone, wstawZapis, loadSiteAndCsrf, getCookie} from "./modulWork.js";
 
@@ -8,7 +8,6 @@ export interface Question{
     punish : number
 }
 
-let questions : Question[];
 let quizSize : number;
 let act_quiz_id : number;
 
@@ -22,9 +21,12 @@ const elNick = document.getElementById("nick") as HTMLInputElement;
 // zmienne globalne
 let Interwal;
 let aktPyt : number = 0;
-let Odpowiedzi : string[];
-let Statystyki : number[];
-let Wzor : number[];
+let tables = {
+	Odpowiedzi : [],
+	Statystyki : [],
+	Poprawne : [],
+	Pytania : []
+}
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
 let wynik : number = 0;
@@ -38,8 +40,8 @@ export function odnowGlob(){
 	elOdpowiedz.value = "";
 	timer.setSekundy(0);
 	trybSpr = false;
-	inicjujTablice(Odpowiedzi, "");
-	inicjujTablice(Statystyki, 0);
+	inicjujTablice(tables.Odpowiedzi, quizSize, "");
+	inicjujTablice(tables.Statystyki, quizSize, 0);
 	nick = "";
 
 	// wyświetlenie strony startowej
@@ -56,103 +58,84 @@ export function odnowGlob(){
 export function startujQuiz(quiz_id : number){
 	getJSON('/quiz/'+ quiz_id).then(result => {
 		console.log(result);
-		questions = result;
-		quizSize = questions.length;
-		Odpowiedzi = new Array(quizSize);
-		Statystyki = new Array(quizSize);
-		inicjujTablice(Odpowiedzi, "");
-		inicjujTablice(Statystyki, 0);
+		tables.Pytania = result;
+		quizSize = tables.Pytania.length;
+		inicjujTablice(tables.Odpowiedzi, quizSize, "");
+		inicjujTablice(tables.Statystyki, quizSize, 0);
 		act_quiz_id = quiz_id;
 		elStartowy.style.display = "none";
 		elQuiz.style.display = "grid";
-		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+		wypelnijStrone(aktPyt, tables, trybSpr);
 		// o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
-		Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
+		Interwal = setInterval(() => {timer.pchnijTimer(tables.Statystyki, aktPyt);}, 1000);
 	}).catch(() => {console.log('error getting questions');});
 };
 
 export function przejrzyjQuiz(quiz_id : number){
 	getJSON('/quiz/'+ quiz_id).then(result => {
 		console.log(result);
-		questions = result;
-		quizSize = questions.length;
-		Odpowiedzi = new Array(quizSize);
-		Statystyki = new Array(quizSize);
-
+		tables.Pytania = result;
+		quizSize = tables.Pytania.length;
 		act_quiz_id = quiz_id;
 
 		getJSON('/results/' + quiz_id).then(result => {
 			console.log(result);
-			Odpowiedzi = result.user_ans;
-			Statystyki = result.times;
-			Wzor = result.corr_ans;
-			wynik = result.wynik;
+			tables.Odpowiedzi = result.user_ans;
+			tables.Statystyki = result.times;
+			tables.Poprawne = result.corr_ans;
+			wynik = Math.ceil(result.points);
 			elStartowy.style.display = "none";
 			elQuiz.style.display = "grid";
+	
+			const popup = document.createElement('div');
+			popup.setAttribute('class', 'block');
+			document.querySelector('body').appendChild(popup);
+			const text = document.createElement('div');
+			text.setAttribute('class', 'block_text');
+			text.innerHTML = "Twój wynik to " + wynik + "pkt";
+			popup.appendChild(text);
+			
+			dodajSubmit(popup, 'Zobacz Odpowiedzi').
+			addEventListener('click', () => {
+				elOdpowiedz.setAttribute('disabled', 'yes');
+				document.getElementById('skoncz').setAttribute('disabled', 'yes');
+				trybSpr = true;
+				popup.remove();
+				wypelnijStrone(aktPyt, tables, trybSpr);
+				wstawZapis(wynik);
+			});
 		});
 		
-		//const popup = document.createElement('div');
-		//popup.setAttribute('class', 'block');
-		//document.querySelector('body').appendChild(popup);
-		//const text = document.createElement('div');
-		//text.setAttribute('class', 'block_text');
-		//text.innerHTML = "Twój wynik to " + wynik + "pkt";
-		//popup.appendChild(text);
-		//
-		//dodajSubmit(popup, 'Zobacz Odpowiedzi').
-		//addEventListener('click', () => {
-		//	elOdpowiedz.setAttribute('disabled', 'yes');
-		//	elSkoncz.setAttribute('disabled', 'yes');
-		//	trybSpr = true;
-		//	popup.remove();
-		//	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
-		//	wstawZapis(wynik);
-		//});
-		trybSpr = true;
-		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
-		// o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
-		Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
 	}).catch(() => {console.log('error getting questions');});
 }
 
 // nastepne pytanie
 document.getElementById("dalej").addEventListener('click', () => {
 	aktPyt++;
-	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+	wypelnijStrone(aktPyt, tables, trybSpr);
 });
 
 // poprzednie pytanie
 document.getElementById("wstecz").addEventListener('click', () => {
 	aktPyt--;
-	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+	wypelnijStrone(aktPyt, tables, trybSpr);
 });
 
 // anuluj Quiz
 document.getElementById("anuluj").addEventListener('click', () => {
-	clearInterval(Interwal);
-	odnowGlob();
+	location.reload();
 });
 
 // zapisz odpowiedz sprawdz czy mozna skonczyc
 elOdpowiedz.addEventListener('input', () => {
-	Odpowiedzi[aktPyt] = elOdpowiedz.value;
-	for (const odp of Odpowiedzi){
+	tables.Odpowiedzi[aktPyt] = elOdpowiedz.value;
+	for (const odp of tables.Odpowiedzi){
 		if(odp === undefined || odp === ""){
 			document.getElementById('skoncz').setAttribute('disabled', 'yes');
 			return;
 		}
 	}
 	document.getElementById('skoncz').removeAttribute('disabled');
-});
-
-// zapisz sam wynik
-document.getElementById("bezZap").addEventListener('click', () => {
-	zapiszWynik(wynik, nick, null, Odpowiedzi);
-});
-
-// zapisz ze statystykami
-document.getElementById("zZap").addEventListener('click',() => {
-	zapiszWynik(wynik, nick, Statystyki, Odpowiedzi);
 });
 
 // pokaz popup z wynikiem
@@ -162,13 +145,13 @@ document.getElementById('skoncz').addEventListener('click', () => {
 	// stworz popup i napisz w nim
 	let Stats_proc : number[] = [];
 	let sum = 0;
-	for(const stat of Statystyki){
+	for(const stat of tables.Statystyki){
 		sum += stat;
 	}
-	for(const stat of Statystyki){
+	for(const stat of tables.Statystyki){
 		Stats_proc.push(100*stat/sum); 
 	}
-	const answers = {ans : Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF')}
+	const answers = {ans : tables.Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF')}
 	const response = fetch('/quiz/' + act_quiz_id, {
 		method: 'POST',
 		headers: {
@@ -185,23 +168,4 @@ document.getElementById('skoncz').addEventListener('click', () => {
 		console.log(err);
 		location.reload();
 	})	
-	//elWyslij.innerHTML += '<input type="text" name="answers" value="' + JSON.stringify(answers) +'">'
-	
-	//const popup = document.createElement('div');
-	//popup.setAttribute('class', 'block');
-	//document.querySelector('body').appendChild(popup);
-	//const text = document.createElement('div');
-	//text.setAttribute('class', 'block_text');
-	//text.innerHTML = "Twój wynik to " + wynik + "pkt";
-	//popup.appendChild(text);
-//
-	//dodajSubmit(popup, 'Zobacz Odpowiedzi').
-	//addEventListener('click', () => {
-	//	elOdpowiedz.setAttribute('disabled', 'yes');
-	//	elSkoncz.setAttribute('disabled', 'yes');
-	//	trybSpr = true;
-	//	popup.remove();
-	//	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
-	//	wstawZapis(wynik);
-	//});
 });

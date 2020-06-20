@@ -161,6 +161,7 @@ app.get('/results/:quizId(\\d+)', (req, res) => {
     }
     quizStore.giveResult(req.session.user, parseInt(req.params.quizId))
     .then((result) =>{
+        console.log("wysylam " + result)
         res.send(result);        
     }).catch(()=>{
         console.log('error saving results');

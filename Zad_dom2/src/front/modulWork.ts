@@ -10,9 +10,9 @@ export function dodajSubmit(father : HTMLElement, value : string) : HTMLInputEle
 	return submit;
 }
 
-export function inicjujTablice ( tablica, wartosc) {
-	for(let i=0; i<tablica.length; i++){
-		tablica[i] = wartosc;
+export function inicjujTablice ( tablica : any[], length, wartosc) {
+	for(let i=0; i<length; i++){
+		tablica.push(wartosc);
 	}
 }
 
@@ -42,32 +42,31 @@ export class TimerClass {
 }
 
 // wypelnia strone aktualnym pytaniem
-export function wypelnijStrone(aktPyt : number,
-                               Odpowiedzi : string[], questions : Question[], trybSpr : boolean) : void {
+export function wypelnijStrone(aktPyt : number, tables : any, trybSpr : boolean) : void {
 	const elNrPytania = document.getElementById("nrPytania");
 	const elPytanie = document.getElementById("pytanie");
 	const elKara = document.getElementById("kara");
 	const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
-	const quizSize = questions.length;
+	const quizSize = tables.Pytania.length;
 
 	// zmien stan(nr pytania, kare, czerwone tlo)
 	elNrPytania.innerHTML = "Nr. Pytania: " + (aktPyt+1).toString() + "/" + quizSize;
-	elKara.innerHTML = "Ew. kara: " + questions[aktPyt].punish;
+	elKara.innerHTML = "Ew. kara: " + tables.Pytania[aktPyt].punish;
 	// TODO
-	//if (trybSpr === true &&  Odpowiedzi[aktPyt] !== quizData.zadania[aktPyt][1].toString()){
-	//	elKara.style.backgroundColor = "red";
-	//}else {
-	//	elKara.style.backgroundColor = "";
-	//}
+	if (trybSpr === true &&  tables.Odpowiedzi[aktPyt] !== tables.Poprawne[aktPyt]){
+		elKara.style.backgroundColor = "red";
+	}else {
+		elKara.style.backgroundColor = "";
+	}
 
 	// zmien pytanie
-	elPytanie.innerHTML = questions[aktPyt].content + " = ";
-	//if (trybSpr === true){
-	//	elPytanie.innerHTML += quizData.zadania[aktPyt][1];
-	//}
+	elPytanie.innerHTML = tables.Pytania[aktPyt].content + " = ";
+	if (trybSpr === true){
+		elPytanie.innerHTML += tables.Poprawne[aktPyt];
+	}
 
 	// wpisz jesli juz na to odpowiedzial
-	elOdpowiedz.value = Odpowiedzi[aktPyt];
+	elOdpowiedz.value = tables.Odpowiedzi[aktPyt];
 
 	// zablokuj/odblokuj przyciski nawigacji
 	const elDalej = document.getElementById("dalej");
