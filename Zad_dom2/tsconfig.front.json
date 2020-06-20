@@ -1,7 +1,4 @@
 {
-    "exclude": [
-        "src/server"
-    ],
     "compilerOptions": {
         "target": "es2016",
         "removeComments": true,
@@ -11,7 +8,7 @@
         "watch": false
       },
       "include": [
-        "./src/**/*.ts"
+        "./src/front/*.ts"
       ]
 
 }

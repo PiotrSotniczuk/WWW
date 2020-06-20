@@ -140,11 +140,9 @@ elOdpowiedz.addEventListener('input', () => {
 	document.getElementById('skoncz').removeAttribute('disabled');
 });
 
-// pokaz popup z wynikiem
-document.getElementById('skoncz').addEventListener('click', () => {
+document.getElementById('skoncz').addEventListener('click', async () => {
 	clearInterval(Interwal);
 
-	// stworz popup i napisz w nim
 	let Stats_proc : number[] = [];
 	let sum = 0;
 	for(const stat of tables.Statystyki){
@@ -154,7 +152,7 @@ document.getElementById('skoncz').addEventListener('click', () => {
 		Stats_proc.push(100*stat/sum); 
 	}
 	const answers = {ans : tables.Odpowiedzi, stats : Stats_proc, _csrf : getCookie('CSRF')}
-	const response = fetch('/quiz/' + act_quiz_id, {
+	const response = await fetch('/quiz/' + act_quiz_id, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -163,11 +161,11 @@ document.getElementById('skoncz').addEventListener('click', () => {
 		body: JSON.stringify(answers)
 	});
 
-	response.then(()=>{
+	const com : string = (await response.json()).com;
+	if(com !== "OK"){
+		alert(com);
 		location.reload();
-		console.log('wyslano');
-	}).catch(err => {
-		console.log(err);
+	}else{
 		location.reload();
-	})	
+	}
 });

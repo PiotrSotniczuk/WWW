@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test",
+    "test": "npm run createdb && mocha --timeout 20000 dist/tests.js && rm -f quizes.db",
     "start": "npm run serve",
     "build:server": "tsc -p ./tsconfig.server.json",
     "build:front": "tsc -p ./tsconfig.front.json",
-    "build": "npm run build:server && npm run build:front",
+    "build:test": "tsc --outDir dist src/tests/tests.ts",
+    "build": "npm run build:server && npm run build:front && npm run build:test",
     "serve": "node dist/server.js",
     "watch": "npm-watch",
-    "createdb": "node dist/createDB.js"
+    "createdb": "rm -f quizes.db && node dist/createDB.js"
   },
   "author": "Piotr",
   "license": "ISC",
@@ -32,6 +33,12 @@
   "devDependencies": {
     "@types/node": "^14.0.13",
     "@types/sqlite3": "^3.1.6",
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/selenium-webdriver": "^3.0.17",
+    "chai": "^4.2.0",
+    "mocha-webdriver": "^0.2.7",
+    "selenium-webdriver": "^3.6.0"
   }
 }

@@ -19,6 +19,7 @@ const csrfProtection = csurf({cookie: true});
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/../static'));
+app.set('view engine', 'pug');
 
 const loginStore : LoginStore = new LoginStore('quizes.db');
 const quizStore : QuizStore = new QuizStore('quizes.db');
@@ -144,10 +145,10 @@ app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
     quizStore.setResult(req.session.user, parseInt(req.params.quizId), req.body)
     .then(() =>{
         console.log('skonczone');
-        res.redirect('/');        
+        res.send({com : "OK"});        
     }).catch(()=>{
         console.log('error saving results');
-        res.redirect('/');
+        res.send({com : "Quiz is already finished"});
     });
     
 })
@@ -171,7 +172,7 @@ app.get('/results/:quizId(\\d+)', (req, res) => {
 
 app.use((req, res) => {
     res.status(404);
-    res.render('404');
+    res.sendFile(path.join(__dirname, '/../static/404.html'));
 })
 
 export default app;
