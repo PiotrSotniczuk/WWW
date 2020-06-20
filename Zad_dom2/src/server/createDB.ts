@@ -116,6 +116,7 @@ async function createDoneIfNeeded(db: sqlite.Database): Promise<void> {
               quiz_id INTEGER,
               start INTEGER,
               ended INTEGER,
+              points INTEGER,
               FOREIGN KEY(quiz_id) REFERENCES quizes(id),
 			  FOREIGN KEY(user_nick) REFERENCES users(nick),
 			  PRIMARY KEY(quiz_id, user_nick));`, [], (err1: any) => {

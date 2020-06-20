@@ -152,6 +152,22 @@ app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
     
 })
 
+app.get('/results/:quizId(\\d+)', (req, res) => {
+    if(req.session.user === null || req.session.user === undefined || 
+        req.session.user === ""){
+        res.cookie('USER_LOGGED', "");
+        res.redirect('/');
+        return;
+    }
+    quizStore.giveResult(req.session.user, parseInt(req.params.quizId))
+    .then((result) =>{
+        res.send(result);        
+    }).catch(()=>{
+        console.log('error saving results');
+        res.redirect('/');
+    });
+});
+
 app.use((req, res) => {
     res.status(404);
     res.render('404');

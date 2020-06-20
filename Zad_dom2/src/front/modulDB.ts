@@ -1,4 +1,4 @@
-import {odnowGlob, startujQuiz} from "./main.js";
+import {odnowGlob, startujQuiz, przejrzyjQuiz} from "./main.js";
 
 export async function getJSON(url = '') {
 	// Default options are marked with *
@@ -19,13 +19,15 @@ export function wyswietlListe() : void {
 		result.forEach((quiz) => {
 			console.log(quiz);
 			let list : string = "";
-			list += quiz.name + 
-			" <input type='radio' name='quiz' value='" + quiz.id + "'>";
+			list += quiz.name;
 			if(quiz.ended === null){
-				list += "Rozwiąż<br>";
+				list += "--->Rozwiąż";
+				list += " <input type='radio' name='quiz' value='" + quiz.id + "'><br>";
 			} else{
-				list += "Przejrzyj<br>";
-			}
+				list += "--->Przejrzyj";
+				list += " <input type='radio' name='quiz' value='" + (-quiz.id) + "'><br>";
+			} 
+					
 			elQuizy.innerHTML += list;
 		});
 		elQuizy.innerHTML += "<input type='submit' value='Otwórz'>"
@@ -38,7 +40,11 @@ export function wyswietlListe() : void {
 			if(quiz_id === undefined){
 				console.log("Select something!!");
 			}else{
-				startujQuiz(quiz_id);
+				if(quiz_id > 0){
+					startujQuiz(quiz_id);
+				}else{
+					przejrzyjQuiz(-quiz_id);
+				}
 			}
 			event.preventDefault();
 		}, false);

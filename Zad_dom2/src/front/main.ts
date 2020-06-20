@@ -24,6 +24,7 @@ let Interwal;
 let aktPyt : number = 0;
 let Odpowiedzi : string[];
 let Statystyki : number[];
+let Wzor : number[];
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
 let wynik : number = 0;
@@ -69,6 +70,50 @@ export function startujQuiz(quiz_id : number){
 		Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
 	}).catch(() => {console.log('error getting questions');});
 };
+
+export function przejrzyjQuiz(quiz_id : number){
+	getJSON('/quiz/'+ quiz_id).then(result => {
+		console.log(result);
+		questions = result;
+		quizSize = questions.length;
+		Odpowiedzi = new Array(quizSize);
+		Statystyki = new Array(quizSize);
+
+		act_quiz_id = quiz_id;
+
+		getJSON('/results/' + quiz_id).then(result => {
+			console.log(result);
+			Odpowiedzi = result.user_ans;
+			Statystyki = result.times;
+			Wzor = result.corr_ans;
+			wynik = result.wynik;
+			elStartowy.style.display = "none";
+			elQuiz.style.display = "grid";
+		});
+		
+		//const popup = document.createElement('div');
+		//popup.setAttribute('class', 'block');
+		//document.querySelector('body').appendChild(popup);
+		//const text = document.createElement('div');
+		//text.setAttribute('class', 'block_text');
+		//text.innerHTML = "Twój wynik to " + wynik + "pkt";
+		//popup.appendChild(text);
+		//
+		//dodajSubmit(popup, 'Zobacz Odpowiedzi').
+		//addEventListener('click', () => {
+		//	elOdpowiedz.setAttribute('disabled', 'yes');
+		//	elSkoncz.setAttribute('disabled', 'yes');
+		//	trybSpr = true;
+		//	popup.remove();
+		//	wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+		//	wstawZapis(wynik);
+		//});
+		trybSpr = true;
+		wypelnijStrone(aktPyt, Odpowiedzi, questions, trybSpr);
+		// o dziwo bez opakowania funkcja pchnijTimer nie widziala swoich atrybutów
+		Interwal = setInterval(() => {timer.pchnijTimer(Statystyki, aktPyt);}, 1000);
+	}).catch(() => {console.log('error getting questions');});
+}
 
 // nastepne pytanie
 document.getElementById("dalej").addEventListener('click', () => {
