@@ -15,11 +15,6 @@ export interface Result{
     avg : number
 }
 
-interface Stats{
-    nick : string,
-    milis : number[]
-}
-
 export interface Quiz{
     name : string,
     id : number,
@@ -28,25 +23,47 @@ export interface Quiz{
     //bestStats : Stats[]
 }
 
+export interface QuizToAdd{
+    name : string,
+    questions : Question[]
+}
+
 export class QuizStore {
     baseName: string;
 
 	constructor(baseName : string){
         this.baseName = baseName;
     }
-    addQuiz(name : string, id : number) : Promise<void>{
+    addQuiz(q : QuizToAdd) : Promise<void>{
         const db = new sqlite.Database(this.baseName);
         return new Promise((resolve, reject) => {
             db.run(
-                `INSERT INTO quizes (id, name)
-                VALUES ((?), (?));`, [id.toString(10), name], (err) => {
+                `INSERT INTO quizes (name)
+                VALUES ((?));`, [q.name], (err) => {
                     if(err) {
-                        console.log(err.message);
+                        console.log(err);
                         reject(`DB Error probably this nick exist`);
                         db.close();
                         return;
                     }
-                    console.log([id.toString(10), name]);
+                    let i=0;
+                    for(const quest of q.questions){
+                        const param : string[] = [i.toString(10), quest.content, quest.punish.toString(10),
+                        quest.answer.toString(10), q.name];
+                        i++;
+                        console.log(param);
+                        db.run(`INSERT INTO questions (nr, content, punish,
+                            answer, quiz_id) VALUES ((?),
+                            (?), (?), (?), (SELECT id from quizes where name=(?)));`, 
+                            param, (err2: any) => {
+                                if(err2) {
+                                    console.log(err2);
+                                    reject(`DB Error probably this nick exist`);
+                                    db.close();
+                                    return;
+                                }
+                            });
+                    }
                     resolve();
                     db.close();
                 });
@@ -221,6 +238,7 @@ export class QuizStore {
 		const Best : any[] = [];
         let sum = 0;
          const Times :number[]= [];
+        const Avg :number[] = [];
         return new Promise((resolve, reject) => {
             db.serialize(() => {
                 db.get(`SELECT * FROM done d
@@ -233,8 +251,26 @@ export class QuizStore {
                         return;
                     }
                     sum = row.points;
-				 })
-				 
+                })
+                 
+                db.all(`SELECT AVG(milis_spend) AS average FROM results r INNER JOIN
+                questions q ON r.quiz_id=q.quiz_id AND r.quest_nr=q.nr
+                WHERE q.quiz_id = (?) AND q.answer=r.user_answer
+                GROUP BY q.nr
+                ORDER BY q.nr ASC;`,
+                  [quiz_id.toString(10)], (err, rows) => {
+                     if(err) {
+                         console.log(err.message);
+                         reject('DB Error getQuiz');
+                         db.close;
+                         return;
+                     }
+                     for(const row of rows){
+                        Avg.push(row.average/1000);
+					}
+                     
+                })                
+                 
 				db.all(`SELECT user_nick, points FROM done
 				WHERE quiz_id = (?)
 				ORDER BY points ASC;`,
@@ -266,57 +302,12 @@ export class QuizStore {
                         User_Answers.push(parseInt(row.user_answer));
                         Times.push(parseInt(row.milis_spend)/1000);
 					}
-					resolve({points : sum, corr_ans : Corr_Answers, user_ans : User_Answers, times : Times, best: Best});
+					resolve({points : sum, corr_ans : Corr_Answers, user_ans : User_Answers, times : Times, best: Best, avg : Avg});
             		db.close();
             		return;
                 });
-
-
-
             });
             
         });
     }
 }
-
-
-//if(row.ended === null){
-//    quizes.push(quiz);
-//    i++;
-//    if(i === size){
-//        db.close();
-//        resolve(quizes);
-//    }
-//}else{
-//    db.serialize(() => {
-//        let res_tab : Result[] = [];
-//        db.all(`SELECT q.nr, q.content, q.punish, q.answer, r.user_answ, r.milis
-//        FROM questions q INNER JOIN results r
-//        ON q.nr=r.quest_nr AND q.quiz_id=r.quiz_id AND q.quiz_id=(?)
-//        AND r.user_nick=(?)
-//        ORDER BY q.nr ASC;`, [quiz.id, nick], (err1, res_rows) => {
-//            //let res_tab : Result[] = [];
-//            if(err1 || res_rows === undefined) {
-//                console.log(err1.message + "maybe done but no results");
-//                reject('DB Error getQuizes');
-//                db.close;
-//                return;
-//            }
-//            for(let j=0; j<res_rows.length; j++){
-//                console.log(row);
-//                res_tab.push({question: {nr: row.nr, content: row.content,
-//                punish: row.punish, answer: row.answer}, user_answ: row.user_answ,
-//                milis: row.milis, avg: null});
-//            }
-//            quizes.push(quiz);
-//            i++;
-//            if(i === size){
-//                db.close()
-//                resolve(quizes);
-//            }
-//        });
-//    });
-//}
-
-//UPDATE done SET start=(?) WHERE user_nick=(?) 
-//AND quiz_id=(?);

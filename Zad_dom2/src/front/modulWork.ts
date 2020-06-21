@@ -50,11 +50,18 @@ export function wypelnijStrone(aktPyt : number, tables : any, trybSpr : boolean)
 	const elStatIn = document.getElementById("statInnych");
 	const elOdpowiedz = document.getElementById("odpowiedz") as HTMLInputElement;
 	const quizSize = tables.Pytania.length;
+	const elSrednio = document.getElementById("srednio");
 
 	// zmien stan(nr pytania, kare, czerwone tlo)
 	elNrPytania.innerHTML = "Nr. Pytania: " + (aktPyt+1).toString() + "/" + quizSize;
 	elKara.innerHTML = "Ew. kara: " + tables.Pytania[aktPyt].punish;
 	elStatTw.innerHTML = "Spedziłeś tu: " + parseFloat(tables.Statystyki[aktPyt]).toFixed(2) + " s<br>";
+	elSrednio.innerHTML = "Inni spedzali tu srednio: ";
+	if(isNaN(tables.Srednio[aktPyt])){
+		elSrednio.innerHTML += "brak danych<br>";
+	}else{
+		elSrednio.innerHTML += parseFloat(tables.Srednio[aktPyt]).toFixed(2) + " s<br>";
+	}
 	elStatIn.innerHTML = "A najlepsi:<br>";
 	for(const stat of tables.Najlepsi){
 		elStatIn.innerHTML += "<li>" + stat.nick + ": " + parseFloat(stat.points).toFixed(2) + "</li>"
@@ -109,6 +116,7 @@ export function getCookie(cname) : string {
 export function loadSiteAndCsrf(){
 	const username : string = getCookie('USER_LOGGED');
 	const elLogin = document.getElementById("logowanie");
+	const elNowyQuiz = document.getElementById("nowyQuiz");
 	const csrfCookie : string = getCookie('CSRF');
 	document.getElementById("quiz").style.display = "none";
 	if(username.length > 0){
@@ -130,4 +138,12 @@ export function loadSiteAndCsrf(){
 			'<input type="submit" value="Login">'+
 		'</form>';
 	}
+	elNowyQuiz.innerHTML ='<form method="POST" action="/newQuiz">'+
+	'<input type="hidden" name="_csrf" value="'+ csrfCookie +'">'+
+	'Write quiz in this format:  <br>'+
+	'{"name":"example","questions":[{"content":"0 + 0","answer":0,"punish":0},'+
+	'{"content":"3 + 3","answer":6,"punish":3}]} <br>' +
+	'<input type="text" name="newQuiz"  style="width:300px"><br>'+
+	'<input type="submit" value="Send">'+
+	'</form>';
 }

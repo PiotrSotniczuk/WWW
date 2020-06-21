@@ -26,7 +26,8 @@ let tables = {
 	Statystyki : [],
 	Poprawne : [],
 	Pytania : [],
-	Najlepsi : []
+	Najlepsi : [],
+	Srednio : []
 }
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
@@ -85,6 +86,7 @@ export function przejrzyjQuiz(quiz_id : number){
 			tables.Statystyki = result.times;
 			tables.Poprawne = result.corr_ans;
 			tables.Najlepsi = result.best;
+			tables.Srednio = result.avg;
 			wynik = parseFloat(result.points).toFixed(2);
 			elStartowy.style.display = "none";
 			elQuiz.style.display = "grid";
