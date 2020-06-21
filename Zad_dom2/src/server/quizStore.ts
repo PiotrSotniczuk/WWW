@@ -1,6 +1,4 @@
 import * as sqlite from 'sqlite3';
-import { resolve } from 'path';
-import { rejects } from 'assert';
 
 export interface Question{
     content : string,

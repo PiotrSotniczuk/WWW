@@ -97,6 +97,7 @@ export function wypelnijStrone(aktPyt : number, tables : any, trybSpr : boolean)
 	}
 }
 
+// parse one cookie
 export function getCookie(cname) : string {
 	var name = cname + "=";
 	var decodedCookie = decodeURIComponent(document.cookie);
@@ -113,6 +114,7 @@ export function getCookie(cname) : string {
 	return "";
   }
 
+// zapisz csrfy i zaladuj strone
 export function loadSiteAndCsrf(){
 	const username : string = getCookie('USER_LOGGED');
 	const elLogin = document.getElementById("logowanie");

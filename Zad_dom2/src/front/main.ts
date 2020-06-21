@@ -32,29 +32,8 @@ let tables = {
 const timer : TimerClass = new TimerClass();
 let trybSpr : boolean = false;
 let wynik : string = "";
-let nick : string = "";
 
 loadSiteAndCsrf();
-
-// reinicjalizacja zmiennych
-export function odnowGlob(){
-	aktPyt = 0;
-	elOdpowiedz.value = "";
-	timer.setSekundy(0);
-	trybSpr = false;
-	inicjujTablice(tables.Odpowiedzi, quizSize, "");
-	inicjujTablice(tables.Statystyki, quizSize, 0);
-	nick = "";
-
-	// wyświetlenie strony startowej
-	// TODO wyswietlRanking();
-	elNick.value = "Twój-nick";
-	elStartowy.style.display = "block";
-	elQuiz.style.display = "none";
-	document.getElementById('skoncz').setAttribute('disabled', 'yes');
-	elOdpowiedz.removeAttribute('disabled');
-	elPoSkonczeniu.style.display = "none";
-}
 
 // strona Quizu
 export function startujQuiz(quiz_id : number){
@@ -73,6 +52,7 @@ export function startujQuiz(quiz_id : number){
 	}).catch(() => {console.log('error getting questions');});
 };
 
+// odpal quiz do odczytu
 export function przejrzyjQuiz(quiz_id : number){
 	getJSON('/quiz/'+ quiz_id).then(result => {
 		console.log(result);
@@ -142,6 +122,7 @@ elOdpowiedz.addEventListener('input', () => {
 	document.getElementById('skoncz').removeAttribute('disabled');
 });
 
+// wyslij quiz
 document.getElementById('skoncz').addEventListener('click', async () => {
 	clearInterval(Interwal);
 

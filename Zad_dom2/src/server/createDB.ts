@@ -162,6 +162,7 @@ async function createResultsIfNeeded(db: sqlite.Database): Promise<void> {
     })
 }
 
+// buduj baze
 const myDB = new sqlite.Database('quizes.db');
 createQuizesIfNeeded(myDB).then(async () => {
     createQuestionsIfNeeded(myDB).then(async () =>{

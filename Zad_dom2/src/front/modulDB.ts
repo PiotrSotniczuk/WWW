@@ -1,5 +1,6 @@
-import {odnowGlob, startujQuiz, przejrzyjQuiz} from "./main.js";
+import {startujQuiz, przejrzyjQuiz} from "./main.js";
 
+// do pobierania jsona z serwera
 export async function getJSON(url = '') {
 	// Default options are marked with *
 	const response = await fetch(url, {method: 'GET'});
