@@ -1,0 +1,3 @@
+Prosze o Jsona 
+Parsuje go za pomocą JSON.Pars()
+sprawdzam czy jest taki jaki byc powinien w instanceOf
