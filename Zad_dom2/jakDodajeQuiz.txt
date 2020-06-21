@@ -1,3 +1,6 @@
-Prosze o Jsona 
+funkcja w app.ts - app.post('/newQuiz'
+Dostaje Jsona
+Usuwam tagi htmlowe zeby nie bylo skryptu w nich
 Parsuje go za pomocą JSON.Pars()
-sprawdzam czy jest taki jaki byc powinien w instanceOf
+sprawdzam czy jest w tej postaci w jakiej powinien przez instanceOfQuizToAdd(q : any)
+podczas dodawania SQL sprawdza czy imie jest unikalne
