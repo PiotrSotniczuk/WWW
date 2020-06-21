@@ -19,13 +19,34 @@ export interface Quiz{
     name : string,
     id : number,
     ended : number
-    //results : Result[],
-    //bestStats : Stats[]
 }
 
 export interface QuizToAdd{
     name : string,
     questions : Question[]
+}
+
+export function instanceOfQuestion(q : any) : boolean{
+    if(!('content' in q) || !('answer' in q) || !('punish' in q)){
+        return false;
+    }
+    if(typeof(q.content) !== 'string' ||  typeof(q.punish) !== 'number' 
+    || typeof(q.answer) !== 'number'){
+        return false;
+    }
+    return true;
+}
+
+export function instanceOfQuizToAdd(q : any) : boolean{
+    if(!('name' in q) || !('questions' in q) || typeof(q.name) !== 'string'){
+        return false;
+    }
+    for(const quest of q.questions){
+        if(!(instanceOfQuestion(quest))){
+            return false;
+        }
+    } 
+    return true;
 }
 
 export class QuizStore {
@@ -51,7 +72,6 @@ export class QuizStore {
                         const param : string[] = [i.toString(10), quest.content, quest.punish.toString(10),
                         quest.answer.toString(10), q.name];
                         i++;
-                        console.log(param);
                         db.run(`INSERT INTO questions (nr, content, punish,
                             answer, quiz_id) VALUES ((?),
                             (?), (?), (?), (SELECT id from quizes where name=(?)));`, 
@@ -68,29 +88,7 @@ export class QuizStore {
                     db.close();
                 });
             });
-    }
-
-    addQuestion(quiz_id : number, q_nr : number, q : Question) : Promise<void>{
-        const db = new sqlite.Database(this.baseName);
-        return new Promise((resolve, reject) => {
-            const param : string[] = [q_nr.toString(10), q.content, q.punish.toString(10),
-            q.answer.toString(10), quiz_id.toString(10)];
-            db.run(`INSERT INTO questions (nr, content, punish,
-                answer, quiz_id) VALUES ((?), (?), (?), (?), (?));`, 
-                param, (err: any) => {
-                	if (err) {
-						console.log(err);
-                	    reject('DB Error');
-                	    db.close();
-                	    return;
-                	}
-                	resolve();
-                	db.close();
-                });
-        });
-    }
-
-    
+    }  
 
     getQuizList(nick : string) : Promise<Quiz[]>{
         const db = new sqlite.Database(this.baseName);
@@ -105,7 +103,6 @@ export class QuizStore {
                 }
                 const quizes : Quiz[] = [];
                 for(const row of quiz_rows){
-                    console.log(row);
                     let quiz : Quiz = {name: row.name, id: row.id, ended : row.ended};
                     quizes.push(quiz);     
                 }
@@ -128,7 +125,6 @@ export class QuizStore {
                     db.close;
                     return;
                 }
-                console.log(row);
                 if(row.start === null || row.start === undefined){
                     console.log("clock started");
                     const now = new Date()  

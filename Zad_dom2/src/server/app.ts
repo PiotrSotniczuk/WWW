@@ -2,7 +2,7 @@ import express = require('express')
 import cookieParser = require("cookie-parser");
 import path = require('path');
 import { LoginStore } from './loginStore';
-import { Question, QuizStore, QuizToAdd} from './quizStore';
+import { Question, QuizStore, instanceOfQuizToAdd} from './quizStore';
 const connectSqlite = require('connect-sqlite3');
 import session = require('express-session');
 import csurf = require("csurf");
@@ -174,18 +174,18 @@ app.post('/newQuiz', csrfProtection, (req, res) => {
         res.cookie('USER_LOGGED', "");
         res.redirect('/');
     }
-    try{
-        const newQuiz = JSON.parse(req.body.newQuiz) as QuizToAdd;
-        console.log(newQuiz);
-        quizStore.addQuiz(newQuiz).then(() =>{
-            res.redirect('/');        
-        }).catch(()=>{
-            console.log('error adding quiz');
-            res.redirect('/');
-        });
-    }catch(err){
-        console.log(err);
+    const newQuiz = JSON.parse(req.body.newQuiz);
+    if(!(instanceOfQuizToAdd(newQuiz))){
+        console.log('bad quiz input');
+        res.redirect('/');
+        return;
     }
+    quizStore.addQuiz(newQuiz).then(() =>{
+        res.redirect('/');        
+    }).catch(()=>{
+        console.log('error adding quiz');
+        res.redirect('/');
+    });
 });
 
 app.use((req, res) => {

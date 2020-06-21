@@ -169,20 +169,15 @@ createQuizesIfNeeded(myDB).then(async () => {
 			createDoneIfNeeded(myDB).then(async () => {
 				createResultsIfNeeded(myDB).then(async () => {
 
-
-
             		myDB.close();
-            		console.log("add data");
-
+            		
             		const loginStore : LoginStore = new LoginStore('quizes.db');
 
             		loginStore.addUser('user1', 'user1').then(() => {
-            		    console.log('add user1 OK');
             		}).catch(() => {
             		    console.log('add user1 in base');
             		});
             		loginStore.addUser('user2', 'user2').then(() => {
-            		    console.log('add user1 OK');
             		}).catch(() => {
             		    console.log('add user2 in base');
                     });
