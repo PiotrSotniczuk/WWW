@@ -2,7 +2,8 @@ import express = require('express')
 import cookieParser = require("cookie-parser");
 import path = require('path');
 import { LoginStore } from './loginStore';
-import { QuizStore, instanceOfQuizToAdd} from './quizStore';
+import { QuizStore, instanceOfQuizToAdd, Anserws, instanceOfAnswers, 
+    instanceOfQuestion} from './quizStore';
 const connectSqlite = require('connect-sqlite3');
 import session = require('express-session');
 import csurf = require("csurf");
@@ -136,13 +137,19 @@ app.post('/quiz/:quizId(\\d+)', csrfProtection, (req, res) => {
         res.redirect('/');
         return;
     }
-    quizStore.setResult(req.session.user, parseInt(req.params.quizId), req.body)
-    .then(() =>{
-        res.send({com : "OK"});        
-    }).catch(()=>{
-        console.log('error saving results');
-        res.send({com : "Quiz is already finished"});
-    });
+    if(instanceOfAnswers(req.body)){
+        let answers : Anserws = req.body;
+        quizStore.setResult(req.session.user, parseInt(req.params.quizId), answers)
+        .then(() =>{
+            res.send({com : "OK"});        
+        }).catch(()=>{
+            console.log('error saving results');
+            res.send({com : "Quiz is already finished"});
+        });
+    }else{
+        console.log('invalid answers');
+        res.send({com : "Bad format of answers"});
+    }
     
 })
 

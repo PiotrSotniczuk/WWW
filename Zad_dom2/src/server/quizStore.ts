@@ -6,11 +6,9 @@ export interface Question{
     answer : number
 }
 
-export interface Result{
-    question : Question,
-    user_answ : number,
-    milis : number,
-    avg : number
+export interface Anserws{
+    ans : string[],
+    stats : number[]
 }
 
 export interface Quiz{
@@ -44,6 +42,19 @@ export function instanceOfQuizToAdd(q : any) : boolean{
             return false;
         }
     } 
+    return true;
+}
+
+export function instanceOfAnswers(r : any) : boolean{
+    if(!('ans' in r) || !('stats' in r) || r.stats.length !== r.ans.length){
+        return false;
+    }
+    for(let i=0; i<r.ans.length; i++){
+        if(typeof(r.ans[i]) !== 'string' ||  typeof(r.stats[i]) !== 'number' 
+        || isNaN(r.ans[i])){
+            return false;
+        }
+    }
     return true;
 }
 
@@ -160,67 +171,92 @@ export class QuizStore {
             });
         });
     }
-    
-    setResult(nick : string, quiz_id : number, answers : any){
+
+    setResult(nick : string, quiz_id : number, answers : Anserws){
         const db = new sqlite.Database(this.baseName);
         return new Promise((resolve, reject) => {
-            db.get(`SELECT * FROM quizes q INNER JOIN done d
-            ON d.user_nick = (?) AND d.quiz_id = q.id
-            WHERE q.id = (?);`, [nick, quiz_id.toString(10)], (err, row) => {
-                if(err) {
-                    console.log(err.message);
-                    reject('DB Error getQuiz');
+            db.run(`BEGIN EXCLUSIVE TRANSACTION;`, (error) =>{
+                if(error) {
+                    console.log(error.message);
+                    reject('DB Error Transaction');
                     db.close;
                     return;
-				}
-                console.log(row);
-                if(row.start === null || row.start === undefined){
-                    console.log("you havent started yet");
-					reject();
-					db.close;
-                    return;
                 }
-                if(row.ended !== null){
-                    console.log("cant do it twice");
-					reject();
-					db.close;
-                    return;
-				}
-				
-                console.log("clock ended");
-                const now = new Date()  
-                const milis = now.getTime();
-                let points = (milis - row.start)/1000;
-				db.serialize(() => {
-					
-					for( let i=0; i<answers.ans.length; i++){
-						const spend = (milis - row.start)*answers.stats[i]/100;
-						db.run('INSERT INTO results VALUES((?), (?), (?), (?), (?));',
-						[nick, quiz_id.toString(), i.toString(), answers.ans[i].toString(), 
-						spend.toString()], (err) => {if(err) console.log(err.message);});
-                    }
-                    db.each(`SELECT r.user_answer, q.answer, q.punish FROM questions q INNER JOIN results r
-                    ON q.nr = r.quest_nr AND q.quiz_id = r.quiz_id
-                    WHERE q.quiz_id=(?) AND r.user_nick=(?);`,
-                    [quiz_id.toString(), nick], (err, row) =>{
-                        if(err) {
-							console.log(err.message);
-							return;
-						}
-						console.log("akt points=" + points + "  " + row) ;
-                        if(row.user_answer !== row.answer){
-                            points += row.punish;
-                        }
-                    }, () => {
-						db.run('UPDATE done SET ended=(?), points=(?) WHERE quiz_id=(?) AND user_nick=(?);',
-						[milis.toString(), points.toString(), quiz_id.toString(), nick], (err) => {if(err) console.log(err.message);});
-					});            
-
                 
-				})
-				resolve();
-				db.close;
-                return;
+                db.get(`SELECT * FROM quizes q INNER JOIN done d
+                ON d.user_nick = (?) AND d.quiz_id = q.id
+                WHERE q.id = (?);`, [nick, quiz_id.toString(10)], (err, row) => {
+                    if(err) {
+                        db.run(`ROLLBACK;`, ()=>{});
+                        console.log(err.message);
+                        reject('DB Error getQuiz');
+                        db.close;
+                        return;
+			    	}
+                    console.log(row);
+                    if(row.start === null || row.start === undefined){
+                        db.run(`ROLLBACK;`, ()=>{});
+                        console.log("you havent started yet");
+			    		reject();
+			    		db.close;
+                        return;
+                    }
+                    
+                    if(row.ended !== null){
+                        console.log("cant do it twice");
+                        db.run(`ROLLBACK;`, ()=>{});
+			    		reject();
+			    		db.close;
+                        return;
+			    	}
+                
+                    console.log("clock ended");
+                    const now = new Date()  
+                    const milis = now.getTime();
+                    let points = (milis - row.start)/1000;
+			    	db.serialize(() => {
+                    
+			    		for( let i=0; i<answers.ans.length; i++){
+			    			const spend = (milis - row.start)*answers.stats[i]/100;
+			    			db.run('INSERT INTO results VALUES((?), (?), (?), (?), (?));',
+			    			[nick, quiz_id.toString(), i.toString(), answers.ans[i], 
+			    			spend.toString()], (err) => {
+                                if(err) {
+                                    console.log(err.message);
+                                    db.run(`ROLLBACK;`, ()=>{});
+                                }
+                            });
+                        }
+                        db.each(`SELECT r.user_answer, q.answer, q.punish FROM questions q INNER JOIN results r
+                        ON q.nr = r.quest_nr AND q.quiz_id = r.quiz_id
+                        WHERE q.quiz_id=(?) AND r.user_nick=(?);`,
+                        [quiz_id.toString(), nick], (err, row) =>{
+                            if(err) {
+                                console.log(err.message);
+                                db.run(`ROLLBACK;`, ()=>{});
+			    				return;
+			    			}
+			    			console.log("akt points=" + points + "  " + row) ;
+                            if(row.user_answer !== row.answer){
+                                points += row.punish;
+                            }
+                        }, () => {
+			    			db.run('UPDATE done SET ended=(?), points=(?) WHERE quiz_id=(?) AND user_nick=(?);',
+			    			[milis.toString(), points.toString(), quiz_id.toString(), nick], (err) => {
+                                if(err){ 
+                                    console.log(err.message);
+                                    db.run(`ROLLBACK;`, ()=>{});
+                                }
+                                db.run(`COMMIT;`, ()=>{});
+                            });
+			    		});            
+
+                    
+			    	})
+			    	resolve();
+			    	db.close;
+                    return;
+                });
             });
         });
     }
